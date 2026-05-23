@@ -65,7 +65,8 @@ const NORAD_NAMES: Dictionary = {
 	40376: "SMAP",
 }
 
-
+func get_satellites()->Array[Node3D]:
+	return _satellites
 func _ready() -> void:
 	# 1. Bezpieczne przypisanie Słońca
 	sun = get_node_or_null(SUN_PATH)
