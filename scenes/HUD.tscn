@@ -15,6 +15,19 @@ default_font_size = 96
 [sub_resource type="Theme" id="Theme_hud_cine_sub"]
 default_font_size = 28
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fls4u"]
+bg_color = Color(0, 0, 0, 0.5058824)
+border_width_top = 8
+border_width_right = 8
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_right = 54
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1etfg"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hsmw"]
+bg_color = Color(1, 1, 1, 1)
+
 [node name="HUD" type="CanvasLayer" unique_id=613403861]
 script = ExtResource("1_hud")
 
@@ -131,12 +144,38 @@ text = "Stabilizing reference frame"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="." unique_id=955518807]
+[node name="Panel" type="Panel" parent="." unique_id=756729072]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -23.0
-offset_right = 40.0
+offset_left = 1.0
+offset_top = -103.0
+offset_right = 247.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_fls4u")
+
+[node name="Label" type="Label" parent="Panel" unique_id=955518807]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -81.0
+offset_right = 70.0
+offset_bottom = -58.0
 grow_vertical = 0
 text = "Speed:"
 script = ExtResource("2_fls4u")
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel" unique_id=954412478]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 57.0
+offset_right = 228.0
+offset_bottom = 84.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_styles/background = SubResource("StyleBoxFlat_1etfg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_7hsmw")
+max_value = 25.0
+allow_greater = true
