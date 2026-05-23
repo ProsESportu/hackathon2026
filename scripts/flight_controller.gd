@@ -16,16 +16,12 @@ const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere ra
 const ORBIT_ENTRY_DROP_RADIUS: float = 0.655 # midpoint between EARTH_RADIUS (0.51) and OrbitManager.ORBIT_ENTER_RADIUS (0.80)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
-const ORBIT_MANAGER_PATH: NodePath = ^"OrbitManager"
 @onready var game_over_screen: Control = %GameOverScreen
 
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
 var velocity: Vector3 = Vector3.ZERO
 var in_orbit: bool = false
-var _game_over: bool = false
-var _start_global_transform: Transform3D
-var _start_parent: Node
 
 @onready var earth: Node3D = get_node_or_null("../Słońce/ziemia axis/Ziemia")
 
@@ -33,12 +29,8 @@ func _ready() -> void:
 	# Only nudge to a default orbit if the scene placed us at origin.
 	if global_position.length() < 0.001:
 		global_position = Vector3(0.0, 0.0, START_ALT_SCENE)
-	_start_global_transform = global_transform
-	_start_parent = get_parent()
 
 func _process(delta: float) -> void:
-	if _game_over:
-		return
 	_apply_mouse_look()
 	_apply_angular_velocity(delta)
 	_apply_thrust(delta)
@@ -108,40 +100,6 @@ func on_orbit_exited(earth_world_velocity: Vector3) -> void:
 	in_orbit = false
 
 
-func _get_orbit_manager() -> Node:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return null
-	return scene.get_node_or_null(ORBIT_MANAGER_PATH)
-
-
-func _trigger_game_over() -> void:
-	if _game_over:
-		return
-	_game_over = true
-	velocity = Vector3.ZERO
-	ang_vel = Vector3.ZERO
-	if game_over_screen != null:
-		game_over_screen.visible = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-
-func reset_to_start() -> void:
-	var orbit_manager := _get_orbit_manager()
-	if orbit_manager != null and orbit_manager.has_method("force_exit_orbit"):
-		orbit_manager.force_exit_orbit()
-	if _start_parent != null and get_parent() != _start_parent:
-		reparent(_start_parent, true)
-	global_transform = _start_global_transform
-	velocity = Vector3.ZERO
-	ang_vel = Vector3.ZERO
-	in_orbit = false
-	_game_over = false
-	if game_over_screen != null:
-		game_over_screen.visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	# Phantom signals can fire when the player reparents into/out of EarthFrame
 	# (Area3D re-registers in the physics server and re-emits body_entered for
@@ -155,11 +113,16 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if d > 0.55:
 		print("[FlightController]   -> ignored (outside surface threshold)")
 		return
-	_trigger_game_over()
+	velocity = Vector3.ZERO
+	game_over_screen.visible = true
+	velocity=Vector3.ZERO
+	game_over_screen.visible=true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 
 func _on_button_pressed() -> void:
-	reset_to_start()
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	get_tree().reload_current_scene()
 
 func _enforce_earth_floor() -> void:
 	var r: float = global_position.length()
