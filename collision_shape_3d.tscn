@@ -153,7 +153,6 @@ speed_scale = 0.1
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
 
-
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
 visible = false
 layout_mode = 3
