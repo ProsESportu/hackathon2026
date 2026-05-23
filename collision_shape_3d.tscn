@@ -4,8 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
 [ext_resource type="Script" uid="uid://de2jbx0ufb1yx" path="res://scripts/orbit_manager.gd" id="3_orbitm"]
-[ext_resource type="PackedScene" uid="uid://cncgk3yqaatvs" path="res://scenes/HUD.tscn" id="4_hud"]
-[ext_resource type="Script" path="res://scripts/satellite_spawner.gd" id="5_satspawn"]
+[ext_resource type="PackedScene" path="res://scenes/HUD.tscn" id="4_hud"]
+[ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
+[ext_resource type="Texture2D" uid="uid://dtwu5omoxpr32" path="res://earth_night.jpg" id="7_c4iom"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -40,14 +41,22 @@ tonemap_mode = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lixys"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jlw0d"]
+render_priority = 1
+shader = ExtResource("6_jlw0d")
+shader_parameter/shadow_mask2d = ExtResource("7_c4iom")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a87sn"]
+next_pass = SubResource("ShaderMaterial_jlw0d")
 albedo_texture = ExtResource("2_a87sn")
 
 [sub_resource type="SphereMesh" id="SphereMesh_pv212"]
+lightmap_size_hint = Vector2i(17, 9)
 material = SubResource("StandardMaterial3D_a87sn")
 
 [sub_resource type="Animation" id="Animation_lixys"]
-length = 0.001
+length = 365.0
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -75,6 +84,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_pv212"]
 resource_name = "obrót ziemia"
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -90,6 +100,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_a87sn"]
 resource_name = "orbit ziemia"
+length = 365.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -98,7 +109,7 @@ tracks/0/path = NodePath("ziemia axis:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 364.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
@@ -119,6 +130,7 @@ default_font_size = 100
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
 [node name="PlayerSat" parent="." unique_id=873958782 instance=ExtResource("1_pv212")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.294044, 0, 0)
 
 [node name="EarthFrame" type="Node3D" parent="." unique_id=1771122001]
 
@@ -146,7 +158,7 @@ shape = SubResource("SphereShape3D_e68kw")
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
 
 [node name="Ziemia" type="RigidBody3D" parent="Słońce/ziemia axis" unique_id=1654913973]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4792461, 0, 0)
+transform = Transform3D(0.9999998, 0, 0, 0, 1, 0, 0, 0, 0.9999998, 24.773277, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/ziemia axis/Ziemia" unique_id=2002238074]
 shape = SubResource("SphereShape3D_lixys")
@@ -165,6 +177,11 @@ autoplay = &"obrót ziemia"
 speed_scale = 0.1
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
+light_energy = 16.0
+omni_range = 4096.0
+
+[node name="PlayerSat" parent="Słońce" unique_id=1879908710 instance=ExtResource("1_pv212")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
 
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
 unique_name_in_owner = true
@@ -195,4 +212,4 @@ theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
 
-[connection signal="pressed" from="GameOverScreen/Button" to="PlayerSat" method="_on_button_pressed"]
+[connection signal="pressed" from="GameOverScreen/Button" to="Słońce/PlayerSat" method="_on_button_pressed"]
