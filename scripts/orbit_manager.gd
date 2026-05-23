@@ -104,3 +104,17 @@ func _exit_orbit() -> void:
 		player.on_orbit_exited(earth_velocity_world)
 	print("[OrbitManager] EXITED orbit (earth_vel=", earth_velocity_world, ")")
 	orbit_exited.emit()
+
+
+func force_exit_orbit() -> void:
+	state = State.IN_SPACE
+	warned_this_orbit = false
+	if _proximity_active:
+		_proximity_active = false
+		proximity_alert_cleared.emit()
+	if player != null and original_player_parent != null and player.get_parent() != original_player_parent:
+		player.reparent(original_player_parent, true)
+	if earth != null:
+		earth_frame.global_position = earth.global_position
+		_earth_prev_pos = earth.global_position
+		earth_velocity_world = Vector3.ZERO

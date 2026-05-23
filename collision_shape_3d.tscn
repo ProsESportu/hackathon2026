@@ -190,3 +190,5 @@ grow_vertical = 2
 theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
+
+[connection signal="pressed" from="GameOverScreen/Button" to="PlayerSat" method="_on_button_pressed"]
