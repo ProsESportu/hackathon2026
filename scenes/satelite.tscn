@@ -1,8 +1,7 @@
-<<<<<<< Updated upstream
 [gd_scene format=4 uid="uid://dp61ypndoplp"]
 
 [ext_resource type="Script" path="res://scenes/satelite.gd" id="1_amfgn"]
-[ext_resource type="Texture2D" path="res://OIP-4121368521.jpg" id="1_qjwp1"]
+[ext_resource type="Texture2D" uid="uid://bil3kgaq56265" path="res://OIP-4121368521.jpg" id="1_qjwp1"]
 
 [sub_resource type="Gradient" id="Gradient_amfgn"]
 colors = PackedColorArray(0.32156864, 0.32156864, 0.32156864, 1, 1, 1, 1, 1)
@@ -15,14 +14,6 @@ color_ramp = SubResource("Gradient_amfgn")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oq11g"]
 albedo_texture = SubResource("NoiseTexture2D_7xrto")
-=======
-[gd_scene format=4 uid="uid://dqirfgoksajo1"]
-
-[ext_resource type="Script" uid="uid://b751elgmu7xvd" path="res://scenes/satelite.gd" id="1_amfgn"]
-[ext_resource type="Texture2D" uid="uid://bil3kgaq56265" path="res://OIP-4121368521.jpg" id="1_qjwp1"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oq11g"]
->>>>>>> Stashed changes
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vlogp"]
 _surfaces = [{
@@ -221,7 +212,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_75qyl")
 
-<<<<<<< Updated upstream
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgywp"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_7xrto"]
@@ -233,8 +223,6 @@ height = 0.01
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.15207374, 1), 0.0, 0.0, 0, 0, Vector2(0.8041474, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
-=======
->>>>>>> Stashed changes
 [node name="satelite" type="Node3D" unique_id=1762155981]
 transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
 script = ExtResource("1_amfgn")
@@ -262,7 +250,6 @@ mesh = SubResource("ArrayMesh_fgywp")
 [node name="dysza" type="MeshInstance3D" parent="." unique_id=1953920570]
 transform = Transform3D(-100, -1.4210855e-12, 1.5099578e-05, -1.5099578e-05, 2.9802322e-05, -99.99999, -2.1316282e-12, -99.99999, -2.3841858e-05, 0, 1, 0)
 mesh = SubResource("ArrayMesh_ihtlg")
-<<<<<<< Updated upstream
 
 [node name="CPUParticles3D" type="CPUParticles3D" parent="." unique_id=966106988]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8320313, 0)
@@ -274,5 +261,3 @@ initial_velocity_min = 3.0
 initial_velocity_max = 10.0
 scale_amount_min = 0.5
 scale_amount_curve = SubResource("Curve_3ps66")
-=======
->>>>>>> Stashed changes
