@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -81,6 +82,8 @@ _data = {
 
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
+[node name="PlayerSat" parent="." unique_id=873958782 instance=ExtResource("1_pv212")]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=856181904]
 environment = SubResource("Environment_a87sn")
 
@@ -104,9 +107,6 @@ shape = SubResource("SphereShape3D_lixys")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/ziemia axis/Ziemia" unique_id=938367271]
 mesh = SubResource("SphereMesh_pv212")
-
-[node name="Camera3D" type="Camera3D" parent="Słońce/ziemia axis/Ziemia" unique_id=79492733]
-transform = Transform3D(0.001780227, 0, -0.99999845, 0, 1, 0, 0.99999845, 0, 0.001780227, -0.98088145, 0, -0.018162072)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Słońce" unique_id=938859443]
 libraries/ = SubResource("AnimationLibrary_pv212")

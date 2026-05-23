@@ -1,0 +1,66 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/PlayerSat.tscn" id="1_player"]
+
+[sub_resource type="Gradient" id="Gradient_sky"]
+offsets = PackedFloat32Array(0, 0.8604651, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sky"]
+noise_type = 0
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sky"]
+noise = SubResource("FastNoiseLite_sky")
+color_ramp = SubResource("Gradient_sky")
+seamless = true
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_sky"]
+panorama = SubResource("NoiseTexture2D_sky")
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("PanoramaSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+tonemap_mode = 2
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_earth"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_earth"]
+
+[sub_resource type="Gradient" id="Gradient_earth"]
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_earth"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_earth"]
+noise = SubResource("FastNoiseLite_earth")
+color_ramp = SubResource("Gradient_earth")
+seamless = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_earth"]
+albedo_color = Color(1, 1, 0, 1)
+emission_enabled = true
+emission_texture = SubResource("NoiseTexture2D_earth")
+
+[sub_resource type="SphereMesh" id="SphereMesh_earth"]
+material = SubResource("StandardMaterial3D_earth")
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="PlayerSat" parent="." instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.11)
+
+[node name="Earth" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_earth")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Earth"]
+shape = SubResource("SphereShape3D_earth")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Earth"]
+mesh = SubResource("SphereMesh_earth")
