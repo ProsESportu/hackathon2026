@@ -224,7 +224,7 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.2972973), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="satelite" type="Node3D" unique_id=1762155981]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
+transform = Transform3D(-0.01, 0, 8.7422775e-10, 0, 0.01, 0, -8.7422775e-10, 0, -0.01, 0, 0, 0)
 script = ExtResource("1_amfgn")
 
 [node name="główny pokład" type="MeshInstance3D" parent="." unique_id=2107706499]
@@ -232,7 +232,7 @@ transform = Transform3D(100, 0, 0, 0, -1.1920929e-05, 99.99999, 0, -99.99999, -1
 mesh = SubResource("ArrayMesh_eovmo")
 
 [node name="satelita" type="MeshInstance3D" parent="." unique_id=1279432315]
-transform = Transform3D(100, 0, 0, 0, -1.1920929e-05, 13.348292, 0, -99.99999, -1.5912406e-06, 0, -1.0999999, 0)
+transform = Transform3D(60.76157, -2.4831192e-05, 21.008842, -157.39372, -6.879898e-06, 8.110426, -2.5245502e-06, -168.71498, -3.4227746e-06, -1.1810303, -1.0999999, 0)
 mesh = SubResource("ArrayMesh_hk4kf")
 
 [node name="wing holder" type="MeshInstance3D" parent="." unique_id=116664320]
@@ -245,6 +245,14 @@ mesh = SubResource("ArrayMesh_yiijl")
 
 [node name="panel 2" type="MeshInstance3D" parent="wing holder" unique_id=726816825]
 transform = Transform3D(0, 1.0430815e-06, -5.000001, -3.4994493e-08, 0.08847154, 2.1093259e-08, 16.590374, 5.960467e-07, 1.421086e-13, 0, -0.008847153, -5.960466e-08)
+mesh = SubResource("ArrayMesh_fgywp")
+
+[node name="panel 3" type="MeshInstance3D" parent="wing holder" unique_id=1159894691]
+transform = Transform3D(-1.4311216e-06, -1.0430815e-06, 5.000001, 3.4529933e-08, 0.08847154, 2.109326e-08, -16.370125, -5.956733e-07, -4.3711415e-07, 4.8529398e-23, 0.0026541462, 1.7881401e-08)
+mesh = SubResource("ArrayMesh_yiijl")
+
+[node name="panel 4" type="MeshInstance3D" parent="wing holder" unique_id=880967148]
+transform = Transform3D(-1.4503765e-06, -1.0430815e-06, 5.000001, 3.49945e-08, 0.08847155, 2.1093262e-08, -16.590374, -5.9567327e-07, -4.3711412e-07, -4.8529398e-23, -0.008847154, -5.9604666e-08)
 mesh = SubResource("ArrayMesh_fgywp")
 
 [node name="dysza" type="MeshInstance3D" parent="." unique_id=1953920570]
