@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bmxvn3qwflpxd" path="res://scripts/flight_controller.gd" id="1_flightctl"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5xqsn"]
+radius = 0.05
+height = 0.2
 
 [node name="PlayerSat" type="Node3D" unique_id=1878929943]
 script = ExtResource("1_flightctl")
@@ -16,7 +18,6 @@ far = 100.0
 [node name="Area3D" type="Area3D" parent="Camera" unique_id=159510815]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/Area3D" unique_id=526861454]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_5xqsn")
 
 [connection signal="body_entered" from="Camera/Area3D" to="." method="_on_area_3d_body_entered"]

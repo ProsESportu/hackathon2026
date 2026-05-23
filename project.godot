@@ -61,6 +61,8 @@ l_trigger={
 
 sensors/enable_accelerometer=true
 sensors/enable_gyroscope=true
+"events": []
+}
 
 [physics]
 
