@@ -5,6 +5,12 @@
 [sub_resource type="Theme" id="Theme_hud_alert"]
 default_font_size = 64
 
+[sub_resource type="Theme" id="Theme_hud_cine_main"]
+default_font_size = 96
+
+[sub_resource type="Theme" id="Theme_hud_cine_sub"]
+default_font_size = 28
+
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
@@ -45,5 +51,41 @@ offset_right = 120.0
 offset_bottom = 24.0
 mouse_filter = 2
 text = "EARTH 0.00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CinematicBanner" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -80.0
+offset_right = 640.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_hud_cine_main")
+text = "ENTERING EARTH ORBIT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CinematicSubtitle" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = 24.0
+offset_right = 640.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_hud_cine_sub")
+text = "Stabilizing reference frame"
 horizontal_alignment = 1
 vertical_alignment = 1

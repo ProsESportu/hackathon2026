@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
 [ext_resource type="Script" uid="uid://de2jbx0ufb1yx" path="res://scripts/orbit_manager.gd" id="3_orbitm"]
-[ext_resource type="PackedScene" uid="uid://b5hud00orbit01" path="res://scenes/HUD.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://cncgk3yqaatvs" path="res://scenes/HUD.tscn" id="4_hud"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)

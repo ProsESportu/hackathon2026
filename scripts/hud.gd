@@ -15,10 +15,16 @@ const EDGE_MARGIN_PX: float = 60.0
 @onready var earth_indicator: Control = $EarthIndicator
 @onready var arrow: TextureRect = $EarthIndicator/Arrow
 @onready var distance_label: Label = $EarthIndicator/DistanceLabel
+@onready var cinematic_banner: Label = $CinematicBanner
+@onready var cinematic_subtitle: Label = $CinematicSubtitle
+
+const CINEMATIC_TIME_SCALE: float = 0.1
+const CINEMATIC_DURATION_REAL_SEC: float = 1.5
 
 var earth: Node3D
 var player: Node3D
 var _alert_tween: Tween
+var _cinematic_active: bool = false
 
 
 func _ready() -> void:
@@ -58,13 +64,32 @@ func _process(_delta: float) -> void:
 # --- Signal handlers ----------------------------------------------------------
 
 func _on_orbit_entered() -> void:
-	show_alert("ENTERING EARTH ORBIT", Color.CYAN, 2.5)
+	_play_orbit_entry_cinematic()
 
 func _on_orbit_exit_warning() -> void:
 	show_alert("LEAVING ORBIT — TURN BACK", Color.YELLOW, 2.0)
 
 func _on_orbit_exited() -> void:
 	show_alert("ORBIT LOST", Color.RED, 2.5)
+
+
+# --- Orbit-entry cinematic ----------------------------------------------------
+
+# Drop time_scale, show banner, wait in real-time, restore. The 4th arg to
+# create_timer (ignore_time_scale=true) is what lets the timer fire in wall-clock
+# seconds while the rest of the engine is running at 0.1x.
+func _play_orbit_entry_cinematic() -> void:
+	if _cinematic_active:
+		return
+	_cinematic_active = true
+	cinematic_banner.visible = true
+	cinematic_subtitle.visible = true
+	Engine.time_scale = CINEMATIC_TIME_SCALE
+	await get_tree().create_timer(CINEMATIC_DURATION_REAL_SEC, true, false, true).timeout
+	Engine.time_scale = 1.0
+	cinematic_banner.visible = false
+	cinematic_subtitle.visible = false
+	_cinematic_active = false
 
 
 # --- Alert fade ---------------------------------------------------------------
