@@ -18,7 +18,7 @@ func fetch_satellite_data(norad_id: int) -> void:
 		"Accept: application/json"
 	]
 	
-	http_client.use_threads = true
+	http_client.use_threads = false
 
 	# POPRAWKA: Prawidłowy URL do Celestrak API pobierający dane w formacie JSON
 	var url = "https://celestrak.org" % norad_id
