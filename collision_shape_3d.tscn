@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://rf1v4ikjatxb"]
 
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
+[ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -27,6 +28,7 @@ background_energy_multiplier = 0.6
 sky = SubResource("Sky_lixys")
 ambient_light_source = 1
 reflected_light_source = 1
+tonemap_mode = 2
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e68kw"]
 
@@ -35,7 +37,7 @@ reflected_light_source = 1
 [sub_resource type="SphereShape3D" id="SphereShape3D_lixys"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a87sn"]
-albedo_color = Color(0, 0, 1, 1)
+albedo_texture = ExtResource("2_a87sn")
 
 [sub_resource type="SphereMesh" id="SphereMesh_pv212"]
 material = SubResource("StandardMaterial3D_a87sn")
