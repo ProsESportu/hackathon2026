@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="Orbital Hunter"
-run/main_scene="res://scenes/Main.tscn"
+run/main_scene="uid://rf1v4ikjatxb"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 InputBridge="*res://scripts/input_bridge.gd"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
 
 [physics]
 

@@ -5,8 +5,8 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 0.0008
-const MAX_SPEED: float = 0.0025              # ~16 km/s in scene units
+const THRUST_ACCEL: float = 0.8
+const MAX_SPEED: float = 25              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
