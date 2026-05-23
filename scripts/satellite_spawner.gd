@@ -18,8 +18,8 @@ const ORBIT_MANAGER_PATH: NodePath = ^"../../OrbitManager"
 
 const SATELLITE_SCENE: PackedScene = preload("res://scenes/satelite.tscn")
 
-const SAT_COUNT: int = 12
-const SAT_ORBIT_RADIUS: float = 0.72   # between PROXIMITY_WARN (0.61) and ORBIT_ENTER (0.80)
+const SAT_COUNT: int = 1
+const SAT_ORBIT_RADIUS: float = 0.76   # between PROXIMITY_WARN (0.61) and ORBIT_ENTER (0.80)
 const REVOLUTION_RAD_PER_SEC: float = 0.05
 
 const INTERACT_ENTER_RADIUS: float = 0.08
@@ -30,6 +30,7 @@ enum State { IN_SPACE, IN_ORBIT }
 var state: State = State.IN_SPACE
 var _satellites: Array[Node3D] = []
 var _current_target: Node3D = null
+var _consumed_target: Node3D = null
 
 var sun: Node3D
 var player: Node3D
@@ -115,57 +116,66 @@ func _ready() -> void:
 
 	InputBridge.interact_pressed.connect(_on_interact_pressed)
 
-	_spawn_satellites()
+	_spawn_satellite()
 
 
 
 func _process(delta: float) -> void:
-	rotate_y(REVOLUTION_RAD_PER_SEC * delta)
 	if state == State.IN_ORBIT:
 		_update_proximity()
+	
+	for sat in _satellites:
+		if sat.data != null and sat.data.tle_line1 != "":
+			var dir = OrbitalPosition.compute_direction(sat.data.tle_line1, sat.data.tle_line2)
+			sat.position = dir * SAT_ORBIT_RADIUS
+
+	if _consumed_target != null:
+		var cam = get_viewport().get_camera_3d()
+		if cam and not cam.is_position_in_frustum(_consumed_target.global_position):
+			var old_id = _consumed_target.get_meta("norad_id", -1)
+			_satellites.erase(_consumed_target)
+			_consumed_target.queue_free()
+			_consumed_target = null
+			_spawn_satellite(old_id)
 
 
 # --- Spawning & API Fetching -------------------------------------------------
 
-func _spawn_satellites() -> void:
-	var golden_angle: float = PI * (3.0 - sqrt(5.0))
-	for i in range(SAT_COUNT):
-		var y: float = 1.0 - (float(i) / float(SAT_COUNT - 1)) * 2.0
-		var radius_at_y: float = sqrt(max(0.0, 1.0 - y * y))
-		var theta: float = golden_angle * float(i)
-		var pos: Vector3 = Vector3(
-			cos(theta) * radius_at_y,
-			y,
-			sin(theta) * radius_at_y
-		) * SAT_ORBIT_RADIUS
+func _spawn_satellite(exclude_id: int = -1) -> void:
+	var cat_data: Dictionary
+	if exclude_id == -1:
+		cat_data = SatelliteCatalog.get_random()
+	else:
+		cat_data = SatelliteCatalog.get_random_excluding(exclude_id)
+		
+	var target_id: int = cat_data["norad_id"]
 
-		var sat: Node3D = SATELLITE_SCENE.instantiate()
-		sat.set_sun(sun)
-		sat.visible = false
-		sat.position = pos
-		
-		# Przypisujemy unikalne ID satelity
-		var target_id = NORAD_IDS[i]
-		sat.name = "Satellite_" + str(target_id)
-		sat.set_meta("norad_id", target_id)
-		
-		# Provide mock data immediately to avoid crashes on interaction before network response
-		sat.data = SatelliteData.new()
-		sat.data.norad_id = target_id
-		sat.data.name = "Loading..."
+	var sat: Node3D = SATELLITE_SCENE.instantiate()
+	sat.set_sun(sun)
+	sat.visible = state == State.IN_ORBIT
+	# Initial position will be updated by TLE once available
+	sat.position = Vector3(SAT_ORBIT_RADIUS, 0, 0)
+	
+	sat.name = "Satellite_" + str(target_id)
+	sat.set_meta("norad_id", target_id)
+	
+	# Provide mock data immediately
+	sat.data = SatelliteData.new()
+	sat.data.norad_id = target_id
+	sat.data.name = "Loading..."
 
-		add_child(sat)
-		_satellites.append(sat)
-		
-		var service = get_node_or_null("/root/SatelliteService")
-		if service:
-			if not service.is_connected("satellite_fetched", _on_network_data_received):
-				service.satellite_fetched.connect(_on_network_data_received)
-			if not service.is_connected("satellite_fetch_failed", _on_network_data_failed):
-				service.satellite_fetch_failed.connect(_on_network_data_failed)
-			service.fetch_satellite_data(target_id)
-		else:
-			push_error("SatelliteService not found!")
+	add_child(sat)
+	_satellites.append(sat)
+	
+	var service = get_node_or_null("/root/SatelliteService")
+	if service:
+		if not service.is_connected("satellite_fetched", _on_network_data_received):
+			service.satellite_fetched.connect(_on_network_data_received)
+		if not service.is_connected("satellite_fetch_failed", _on_network_data_failed):
+			service.satellite_fetch_failed.connect(_on_network_data_failed)
+		service.fetch_satellite_data(target_id)
+	else:
+		push_error("SatelliteService not found!")
 
 
 	# (Removed old local Celestrak functions)
@@ -220,6 +230,8 @@ func _update_proximity() -> void:
 	var nearest: Node3D = null
 	var nearest_dist: float = INF
 	for sat in _satellites:
+		if sat == _consumed_target:
+			continue
 		var d: float = player_pos.distance_to(sat.global_position)
 		if d < nearest_dist:
 			nearest_dist = d
@@ -252,5 +264,7 @@ func _on_interact_pressed() -> void:
 
 
 func consume_current() -> void:
+	if _current_target != null:
+		_consumed_target = _current_target
 	_current_target = null
 	satellite_out_of_range.emit()
