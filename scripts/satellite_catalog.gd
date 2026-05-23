@@ -1,27 +1,33 @@
 class_name SatelliteCatalog
 
-# Each entry: { norad_id: int, display_name: String }
-const SATELLITES: Array = [
-	{ "norad_id": 25544, "display_name": "ISS" },
-	{ "norad_id": 20580, "display_name": "Hubble Space Telescope" },
-	{ "norad_id": 49260, "display_name": "Landsat 9" },
-	{ "norad_id": 39084, "display_name": "Landsat 8" },
-	{ "norad_id": 25994, "display_name": "Terra" },
-	{ "norad_id": 27424, "display_name": "Aqua" },
-	{ "norad_id": 40069, "display_name": "Sentinel-1A" },
-	{ "norad_id": 41335, "display_name": "Sentinel-3A" },
-	{ "norad_id": 33591, "display_name": "NOAA-19" },
-	{ "norad_id": 43013, "display_name": "NOAA-20" },
-	{ "norad_id": 41866, "display_name": "GOES-16" },
-	{ "norad_id": 40376, "display_name": "DSCOVR" },
-	{ "norad_id": 38771, "display_name": "NuSTAR" },
-	{ "norad_id": 36119, "display_name": "WISE" },
-	{ "norad_id": 44713, "display_name": "Starlink-1007" },
-]
+static var _satellites: Array = []
+static var _initialized: bool = false
+
+static func _initialize() -> void:
+	if _initialized:
+		return
+	_initialized = true
+	var file := FileAccess.open("res://norad_ids.json", FileAccess.READ)
+	if file == null:
+		push_error("[SatelliteCatalog] Cannot open res://norad_ids.json")
+		return
+	var result = JSON.parse_string(file.get_as_text())
+	file.close()
+	if result == null or not result is Array:
+		push_error("[SatelliteCatalog] Invalid JSON in norad_ids.json")
+		return
+	for id_val in result:
+		_satellites.append({"norad_id": int(id_val), "display_name": "Satellite %d" % int(id_val)})
+
+static func get_satellites() -> Array:
+	_initialize()
+	return _satellites
 
 static func get_random() -> Dictionary:
-	return SATELLITES[randi_range(0, SATELLITES.size() - 1)]
+	_initialize()
+	return _satellites[randi_range(0, _satellites.size() - 1)]
 
 static func get_random_excluding(exclude_norad_id: int) -> Dictionary:
-	var candidates: Array = SATELLITES.filter(func(s): return s["norad_id"] != exclude_norad_id)
+	_initialize()
+	var candidates: Array = _satellites.filter(func(s): return s["norad_id"] != exclude_norad_id)
 	return candidates[randi_range(0, candidates.size() - 1)]

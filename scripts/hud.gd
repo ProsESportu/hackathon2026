@@ -62,12 +62,9 @@ func _ready() -> void:
 	_satellite_spawner.satellite_in_range.connect(_on_satellite_in_range)
 	_satellite_spawner.satellite_out_of_range.connect(_on_satellite_out_of_range)
 	_satellite_spawner.minigame_requested.connect(_on_minigame_requested)
+	_satellite_spawner.satellite_data_ready.connect(_on_network_data_received)
 
 	MinigameBroadcaster.minigame_completed.connect(_on_minigame_completed)
-	
-	var service = get_node_or_null("/root/SatelliteService")
-	if service:
-		service.satellite_fetched.connect(_on_network_data_received)
 
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
