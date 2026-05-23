@@ -21,5 +21,6 @@ func set_sun(node: Node3D) -> void:
 
 
 func _process(_delta: float) -> void:
-	if _sun != null:
-		wing_holder.look_at(_sun.global_position)
+	pass
+	#if _sun != null:
+		#wing_holder.look_at(_sun.global_position)

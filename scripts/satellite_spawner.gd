@@ -152,7 +152,7 @@ func _spawn_satellite(exclude_id: int = -1) -> void:
 	sat.data = SatelliteData.new()
 	sat.data.norad_id = target_id
 	sat.data.name = "Loading..."
-
+	sat.look_at($"../../Słońce/ziemia axis/Ziemia".global_position)
 	add_child(sat)
 	_satellites.append(sat)
 	

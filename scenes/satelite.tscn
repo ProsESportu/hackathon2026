@@ -212,31 +212,20 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_75qyl")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgywp"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_7xrto"]
-material = SubResource("StandardMaterial3D_fgywp")
-radius = 0.005
-height = 0.01
-
-[sub_resource type="Curve" id="Curve_3ps66"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.2972973), 0.0, 0.0, 0, 0]
-point_count = 2
-
 [node name="satelite" type="Node3D" unique_id=1762155981]
 transform = Transform3D(-0.01, 0, 8.7422775e-10, 0, 0.01, 0, -8.7422775e-10, 0, -0.01, 0, 0, 0)
 script = ExtResource("1_amfgn")
 
 [node name="główny pokład" type="MeshInstance3D" parent="." unique_id=2107706499]
-transform = Transform3D(100, 0, 0, 0, -1.1920929e-05, 99.99999, 0, -99.99999, -1.1920929e-05, 0, 0, 0)
+transform = Transform3D(-100.000015, 8.742275e-06, 1.0421606e-12, 0, -1.1920932e-05, 100.000015, 8.742276e-06, 100.000015, 1.1920932e-05, -0.064888, 0, -3.2790524e-08)
 mesh = SubResource("ArrayMesh_eovmo")
 
 [node name="satelita" type="MeshInstance3D" parent="." unique_id=1279432315]
-transform = Transform3D(60.76157, -2.4831192e-05, 21.008842, -157.39372, -6.879898e-06, 8.110426, -2.5245502e-06, -168.71498, -3.4227746e-06, -1.1810303, -1.0999999, 0)
+transform = Transform3D(-60.76157, 3.9580722e-05, -21.008842, -157.3937, -6.8798977e-06, 8.110426, 7.836495e-06, 168.71498, 5.259426e-06, 1.1161423, -1.0999999, -1.3603943e-07)
 mesh = SubResource("ArrayMesh_hk4kf")
 
 [node name="wing holder" type="MeshInstance3D" parent="." unique_id=116664320]
-transform = Transform3D(19.999998, 0, 0, 0, -0.00013474312, 19.999996, 0, -1130.3071, -2.3841856e-06, 0, 0, 0)
+transform = Transform3D(-19.999998, 9.8814584e-05, 2.0843201e-13, 0, -0.00013474311, 19.999996, 1.7484549e-06, 1130.307, 2.3841847e-06, -0.064888, 0, -3.2790524e-08)
 mesh = SubResource("ArrayMesh_gggk3")
 
 [node name="panel 1" type="MeshInstance3D" parent="wing holder" unique_id=1163153970]
@@ -256,21 +245,10 @@ transform = Transform3D(-1.4503765e-06, -1.0430815e-06, 5.000001, 3.49945e-08, 0
 mesh = SubResource("ArrayMesh_fgywp")
 
 [node name="dysza" type="MeshInstance3D" parent="." unique_id=1953920570]
-transform = Transform3D(-100, -1.4210855e-12, 1.5099578e-05, -1.5099578e-05, 2.9802322e-05, -99.99999, -2.1316282e-12, -99.99999, -2.3841858e-05, 0, 1, 0)
+transform = Transform3D(100.000015, 8.742279e-06, -1.5099574e-05, -1.5099578e-05, 2.9802333e-05, -100.000015, -8.742273e-06, 100.000015, 2.3841874e-05, -0.064888, 1, -3.2790524e-08)
 mesh = SubResource("ArrayMesh_ihtlg")
 
-[node name="CPUParticles3D" type="CPUParticles3D" parent="dysza" unique_id=966106988]
-transform = Transform3D(-0.01, -1.5099579e-09, -3.0789404e-16, -1.4683922e-16, 2.3841864e-09, -0.010000001, 1.5099579e-09, -0.010000001, -2.9802327e-09, -2.7662903e-09, 4.3679043e-09, -0.018320315)
-amount = 13
-mesh = SubResource("SphereMesh_7xrto")
-direction = Vector3(0, 1, 0)
-spread = 0.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 3.0
-initial_velocity_max = 10.0
-scale_amount_curve = SubResource("Curve_3ps66")
-
 [node name="Label3D" type="Label3D" parent="." unique_id=1752684086]
-transform = Transform3D(-4.371136e-08, 0, 1, 0, 1, 0, -1, 0, -4.371136e-08, 1.0188103, 0, -8.906718e-08)
+transform = Transform3D(1.3113413e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113413e-07, -1.0836983, 0, 1.4534386e-07)
 text = "_"
 font_size = 130
