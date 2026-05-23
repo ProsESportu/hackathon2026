@@ -4,27 +4,15 @@
 [ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Script" uid="uid://de2jbx0ufb1yx" path="res://scripts/orbit_manager.gd" id="3_orbitm"]
 [ext_resource type="PackedScene" uid="uid://cncgk3yqaatvs" path="res://scenes/HUD.tscn" id="4_hud"]
+[ext_resource type="Texture2D" uid="uid://c0fxtf86pcnet" path="res://8k_stars_milky_way.jpg" id="5_rqkj4"]
 [ext_resource type="Script" uid="uid://d075c3qhgx48i" path="res://scripts/satellite_spawner.gd" id="5_satspawn"]
 [ext_resource type="Texture2D" uid="uid://c0emdshsdeoui" path="res://8k_earth_daymap.jpg" id="6_fqmc4"]
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
 [ext_resource type="Shader" uid="uid://bkd3ds7egm3lr" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
 
-[sub_resource type="Gradient" id="Gradient_lixys"]
-offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.07984487, 0.07984487, 0.07984487, 1, 0.12256441, 0.12256441, 0.12256441, 1, 0.110867396, 0.110867396, 0.110867396, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_a87sn"]
-noise_type = 0
-frequency = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pv212"]
-noise = SubResource("FastNoiseLite_a87sn")
-color_ramp = SubResource("Gradient_lixys")
-seamless = true
-
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
-panorama = SubResource("NoiseTexture2D_pv212")
+panorama = ExtResource("5_rqkj4")
 
 [sub_resource type="Sky" id="Sky_lixys"]
 sky_material = SubResource("PanoramaSkyMaterial_xdl8v")

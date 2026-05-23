@@ -34,6 +34,7 @@ var _cinematic_active: bool = false
 # Satellite info modal (created programmatically)
 var _satellite_spawner: Node
 var _modal_active: bool = false
+var _current_modal_id: int = -1
 var _modal_root: ColorRect
 var _modal_photo: TextureRect
 var _modal_no_photo_label: Label
@@ -63,6 +64,10 @@ func _ready() -> void:
 	_satellite_spawner.minigame_requested.connect(_on_minigame_requested)
 
 	MinigameBroadcaster.minigame_completed.connect(_on_minigame_completed)
+	
+	var service = get_node_or_null("/root/SatelliteService")
+	if service:
+		service.satellite_fetched.connect(_on_network_data_received)
 
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
@@ -268,12 +273,24 @@ func _modal_label(text: String, font_size: int, parent: Node) -> Label:
 	return lbl
 
 
+func _on_network_data_received(api_data: SatelliteData) -> void:
+	if _modal_active and _current_modal_id == api_data.norad_id:
+		_populate_modal_from_data(api_data)
+
 func _show_satellite_modal(data: SatelliteData) -> void:
 	if data == null:
 		return
 	_modal_active = true
+	_current_modal_id = data.norad_id
 	interaction_prompt.visible = false
 
+	_populate_modal_from_data(data)
+
+	Engine.time_scale = 0.0
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	_modal_root.visible = true
+
+func _populate_modal_from_data(data: SatelliteData) -> void:
 	_modal_name.text = data.name if not data.name.is_empty() else "Unknown Satellite"
 	_modal_norad.text   = "NORAD ID:      %d" % data.norad_id
 	_modal_country.text = "Country/Owner: %s" % (data.country if not data.country.is_empty() else "—")
@@ -298,15 +315,16 @@ func _show_satellite_modal(data: SatelliteData) -> void:
 	else:
 		_modal_photo.texture = null
 		_modal_photo.visible = false
+		if data.name == "Loading...":
+			_modal_no_photo_label.text = "Fetching imagery..."
+		else:
+			_modal_no_photo_label.text = "No image available"
 		_modal_no_photo_label.visible = true
-
-	Engine.time_scale = 0.0
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_modal_root.visible = true
 
 
 func _dismiss_satellite_modal() -> void:
 	_modal_active = false
+	_current_modal_id = -1
 	_modal_root.visible = false
 	Engine.time_scale = 1.0
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
