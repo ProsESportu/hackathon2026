@@ -164,6 +164,9 @@ func _on_network_data_received(api_data: SatelliteData) -> void:
 			sat.set_country_text(api_data.name)
 			print("[Spawner] Pobrano dane z API dla: ", api_data.name)
 			satellite_data_ready.emit(api_data)
+			var gemini = get_node_or_null("/root/GeminiService")
+			if gemini:
+				gemini.fetch_description(api_data)
 			break
 
 

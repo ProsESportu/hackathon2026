@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://c0emdshsdeoui" path="res://8k_earth_daymap.jpg" id="6_fqmc4"]
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
-[ext_resource type="Shader" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
+[ext_resource type="Shader" uid="uid://bkd3ds7egm3lr" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
 panorama = ExtResource("5_rqkj4")

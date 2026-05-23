@@ -45,6 +45,7 @@ var _modal_launch: Label
 var _modal_type: Label
 var _modal_orbit: Label
 var _modal_reward: Label
+var _modal_description: Label
 
 
 func _ready() -> void:
@@ -63,6 +64,10 @@ func _ready() -> void:
 	_satellite_spawner.satellite_out_of_range.connect(_on_satellite_out_of_range)
 	_satellite_spawner.minigame_requested.connect(_on_minigame_requested)
 	_satellite_spawner.satellite_data_ready.connect(_on_network_data_received)
+
+	var gemini := get_node_or_null("/root/GeminiService")
+	if gemini:
+		gemini.description_ready.connect(_on_description_ready)
 
 	MinigameBroadcaster.minigame_completed.connect(_on_minigame_completed)
 
@@ -244,10 +249,17 @@ func _setup_satellite_modal() -> void:
 	_modal_type    = _modal_label("", 18, vbox)
 	_modal_orbit   = _modal_label("", 18, vbox)
 
+	var desc_spacer := Control.new()
+	desc_spacer.custom_minimum_size = Vector2(0, 12)
+	vbox.add_child(desc_spacer)
+
+	_modal_description = _modal_label("", 15, vbox)
+	_modal_description.modulate = Color(0.85, 0.85, 0.85, 1.0)
+
 	var reward_spacer := Control.new()
 	reward_spacer.custom_minimum_size = Vector2(0, 16)
 	vbox.add_child(reward_spacer)
-	
+
 	_modal_reward  = _modal_label("", 22, vbox)
 	_modal_reward.modulate = Color(1.0, 0.84, 0.0) # Gold color
 
@@ -274,6 +286,11 @@ func _on_network_data_received(api_data: SatelliteData) -> void:
 	if _modal_active and _current_modal_id == api_data.norad_id:
 		_populate_modal_from_data(api_data)
 
+
+func _on_description_ready(norad_id: int, description: String) -> void:
+	if _modal_active and _current_modal_id == norad_id:
+		_modal_description.text = description
+
 func _show_satellite_modal(data: SatelliteData) -> void:
 	if data == null:
 		return
@@ -289,6 +306,10 @@ func _show_satellite_modal(data: SatelliteData) -> void:
 
 func _populate_modal_from_data(data: SatelliteData) -> void:
 	_modal_name.text = data.name if not data.name.is_empty() else "Unknown Satellite"
+	if not data.description.is_empty():
+		_modal_description.text = data.description
+	else:
+		_modal_description.text = "Fetching AI description..." if data.name != "Loading..." else ""
 	_modal_norad.text   = "NORAD ID:      %d" % data.norad_id
 	_modal_country.text = "Country/Owner: %s" % (data.country if not data.country.is_empty() else "—")
 	_modal_launch.text  = "Launch date:   %s" % (data.launch_date if not data.launch_date.is_empty() else "—")
