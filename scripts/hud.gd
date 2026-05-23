@@ -5,14 +5,16 @@ extends CanvasLayer
 ##   directional indicator (Earth on-screen, in front of camera) or pins an
 ##   arrow to the viewport edge pointing toward it.
 
-const ORBIT_MANAGER_PATH: NodePath = ^"../OrbitManager"
-const EARTH_PATH:         NodePath = ^"../Słońce/ziemia axis/Ziemia"
-const PLAYER_PATH:        NodePath = ^"../PlayerSat"
+const ORBIT_MANAGER_PATH:     NodePath = ^"../OrbitManager"
+const EARTH_PATH:             NodePath = ^"../Słońce/ziemia axis/Ziemia"
+const PLAYER_PATH:            NodePath = ^"../PlayerSat"
+const SATELLITE_SPAWNER_PATH: NodePath = ^"../EarthFrame/SatelliteSpawner"
 
 const EDGE_MARGIN_PX: float = 60.0
 
 @onready var alert_label: Label = $AlertLabel
 @onready var proximity_label: Label = $ProximityLabel
+@onready var interaction_prompt: Label = $InteractionPrompt
 @onready var earth_indicator: Control = $EarthIndicator
 @onready var arrow: TextureRect = $EarthIndicator/Arrow
 @onready var distance_label: Label = $EarthIndicator/DistanceLabel
@@ -40,10 +42,15 @@ func _ready() -> void:
 	orbit_manager.proximity_alert_started.connect(_on_proximity_started)
 	orbit_manager.proximity_alert_cleared.connect(_on_proximity_cleared)
 
+	var satellite_spawner: Node = get_node(SATELLITE_SPAWNER_PATH)
+	satellite_spawner.satellite_in_range.connect(_on_satellite_in_range)
+	satellite_spawner.satellite_out_of_range.connect(_on_satellite_out_of_range)
+
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
 	alert_label.modulate.a = 0.0
 	earth_indicator.visible = false
+	interaction_prompt.visible = false
 
 
 # Generate a small white right-pointing triangle so rotation 0 == "points right".
@@ -89,6 +96,13 @@ func _on_proximity_cleared() -> void:
 	if _proximity_tween != null and _proximity_tween.is_valid():
 		_proximity_tween.kill()
 	proximity_label.visible = false
+
+
+func _on_satellite_in_range(_sat: Node3D) -> void:
+	interaction_prompt.visible = true
+
+func _on_satellite_out_of_range() -> void:
+	interaction_prompt.visible = false
 
 
 # --- Orbit-entry cinematic ----------------------------------------------------
