@@ -6,9 +6,9 @@ extends Node3D
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
 const THRUST_ACCEL: float = 0.1
-const MAX_SPEED: float = 5              # ~16 km/s in scene units
-const IN_ORBIT_THRUST_ACCEL: float = 0.001   # gentler push while inside Earth's orbital bubble
-const IN_ORBIT_MAX_SPEED: float = 0.09       # so the player can't blitz through orbit and crash
+const MAX_SPEED: float = 25              # ~16 km/s in scene units
+const IN_ORBIT_THRUST_ACCEL: float = 0.01   # gentler push while inside Earth's orbital bubble
+const IN_ORBIT_MAX_SPEED: float = 0.9       # so the player can't blitz through orbit and crash
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
@@ -112,7 +112,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	print("[FlightController] body_entered: ", body.name, " dist=", "%.3f" % d, " parent=", parent_name)
 	if d > 0.55:
 		print("[FlightController]   -> ignored (outside surface threshold)")
-		return
+		#return
 	velocity=Vector3.ZERO
 	game_over_screen.visible=true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

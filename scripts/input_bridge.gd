@@ -72,7 +72,7 @@ func _physics_process(delta: float) -> void:
 
 	# Poll keyboard into the rate axes. is_physical_key_pressed uses physical
 	# layout so this still works on non-QWERTY layouts.
-	server.poll()
+	#server.poll()
 	brake = Input.is_physical_key_pressed(KEY_SPACE)
 	roll = _axis(KEY_E, KEY_Q)        # E = roll right (+), Q = roll left (-)
 	thrust = _axis(KEY_W, KEY_S)
