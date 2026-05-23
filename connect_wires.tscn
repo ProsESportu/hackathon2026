@@ -1,46 +1,75 @@
 [gd_scene format=3 uid="uid://cx3co5eywic1f"]
 
+[ext_resource type="Script" uid="uid://dk8pr1p4un3be" path="res://connect_wires.gd" id="1_2amdq"]
 [ext_resource type="Script" uid="uid://7nyvjlcvsomc" path="res://wire.gd" id="1_lg2bt"]
-[ext_resource type="Script" uid="uid://bux5etfu3o1hm" path="res://mouse_follower.gd" id="2_172du"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_172du"]
-size = Vector2(52, 101)
+[ext_resource type="Texture2D" uid="uid://ctskodb87q3h5" path="res://kabelki_in.png" id="3_2amdq"]
+[ext_resource type="Texture2D" uid="uid://i0bnefstw38d" path="res://kabelki_out.png" id="3_8yt0m"]
+[ext_resource type="Texture2D" uid="uid://1oh5uiunbf27" path="res://kabelki_srodek.png" id="4_1j8ne"]
+[ext_resource type="Texture2D" uid="uid://derlpvosxxavx" path="res://metal.jpg" id="6_1j8ne"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2amdq"]
-radius = 25.70992
+radius = 25.019993
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_172du"]
+size = Vector2(86, 101)
 
 [node name="Connect wires" type="Node2D" unique_id=2114735958]
+script = ExtResource("1_2amdq")
 
 [node name="wire" type="Node2D" parent="." unique_id=1788402074]
-position = Vector2(51, 0)
+position = Vector2(51, 147)
 script = ExtResource("1_lg2bt")
-
-[node name="Line2D" type="Line2D" parent="wire" unique_id=518968986]
-
-[node name="to connect" type="Area2D" parent="wire" unique_id=1109760814]
-metadata/_edit_lock_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/to connect" unique_id=713097670]
-visible = false
-position = Vector2(25, -0.5)
-shape = SubResource("RectangleShape2D_172du")
-
-[node name="Polygon2D" type="Polygon2D" parent="wire/to connect" unique_id=96220687]
-polygon = PackedVector2Array(0, -50, 50, -50, 50, 50, 0, 50)
 
 [node name="connection hub" type="Area2D" parent="wire" unique_id=1330322737]
 position = Vector2(1040, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="wire/connection hub" unique_id=1979673023]
 shape = SubResource("CircleShape2D_2amdq")
-metadata/_edit_lock_ = true
 
-[node name="mouse follower" type="Node2D" parent="." unique_id=1737081728]
-script = ExtResource("2_172du")
+[node name="hub poly" type="Polygon2D" parent="wire/connection hub" unique_id=1506108844]
+position = Vector2(156, 58)
+rotation = 3.1415927
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_8yt0m")
+polygon = PackedVector2Array(301.64996, 17.96371, 342.7049, 18.382637, 339.7724, 212.34637, 301.64996, 214.0221, 298.29852, 204.80566, -0.8960571, 205.88068, -2.122757, 28.008316, 300.26022, 26.781609)
+uv = PackedVector2Array(301.64996, 17.96371, 342.7049, 18.382637, 339.7724, 212.34637, 301.64996, 214.0221, 298.29852, 204.80566, -0.8960571, 205.88068, -2.122757, 28.008316, 300.26022, 26.781609)
 
-[node name="Polygon2D" type="Polygon2D" parent="mouse follower" unique_id=948760322]
-polygon = PackedVector2Array(-1, 1, 18, 1, 13, 7, 19, 15, 14, 20, 8, 12, 0, 18)
+[node name="Line2D" type="Line2D" parent="wire" unique_id=518968986]
+width = 92.1
+texture = ExtResource("4_1j8ne")
+texture_mode = 2
 
-[connection signal="area_entered" from="wire/to connect" to="wire" method="_on_to_connect_area_entered"]
-[connection signal="area_exited" from="wire/to connect" to="wire" method="_on_to_connect_area_exited"]
-[connection signal="input_event" from="wire/to connect" to="wire" method="_on_to_connect_input_event"]
+[node name="wire head" type="Area2D" parent="wire" unique_id=326603318]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/wire head" unique_id=713097670]
+position = Vector2(8, -0.5)
+shape = SubResource("RectangleShape2D_172du")
+
+[node name="head poly" type="Polygon2D" parent="wire/wire head" unique_id=96220687]
+position = Vector2(8, 61)
+rotation = 3.1415927
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_2amdq")
+polygon = PackedVector2Array(5.4766235, 9.389404, 31.704346, 11.57505, 31.157928, 218.66473, 2.7445679, 224.67523)
+uv = PackedVector2Array(5.4766235, 9.389404, 31.704346, 11.57505, 31.157928, 26.87455, 97.27359, 28.513786, 100.005646, 204.45804, 30.611511, 202.81882, 31.157928, 218.66473, 2.7445679, 224.67523)
+
+[node name="Label" type="RichTextLabel" parent="." unique_id=2102542955]
+z_index = 7
+offset_left = 386.0
+offset_top = 255.0
+offset_right = 628.0
+offset_bottom = 278.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset = Vector2(111.345, 11.505)
+bbcode_enabled = true
+text = "[rainbow freq=1.0 sat=0.8 val=0.8 speed=1.0][shake rate=5.0 level=5 connected=1]Congratulationensi! you winnn![/shake][/rainbow]"
+
+[node name="Metal" type="Sprite2D" parent="." unique_id=1697696344]
+z_index = -1
+position = Vector2(576, 326)
+scale = Vector2(2.4345992, 2.4436092)
+texture = ExtResource("6_1j8ne")
+
+[connection signal="area_entered" from="wire/connection hub" to="wire" method="_on_connection_hub_area_entered"]
+[connection signal="area_exited" from="wire/connection hub" to="wire" method="_on_connection_hub_area_exited"]
+[connection signal="input_event" from="wire/wire head" to="wire" method="_on_wire_head_input_event"]

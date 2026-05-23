@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://cx3co5eywic1f"]
+
+[ext_resource type="Script" uid="uid://dk8pr1p4un3be" path="res://connect_wires.gd" id="1_2amdq"]
+[ext_resource type="Script" uid="uid://7nyvjlcvsomc" path="res://wire.gd" id="1_lg2bt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2amdq"]
+radius = 25.019993
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_172du"]
+size = Vector2(86, 101)
+
+[node name="Connect wires" type="Node2D" unique_id=2114735958]
+script = ExtResource("1_2amdq")
+
+[node name="wire" type="Node2D" parent="." unique_id=1788402074]
+position = Vector2(51, 147)
+script = ExtResource("1_lg2bt")
+
+[node name="connection hub" type="Area2D" parent="wire" unique_id=1330322737]
+position = Vector2(1040, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/connection hub" unique_id=1979673023]
+shape = SubResource("CircleShape2D_2amdq")
+
+[node name="hub poly" type="Polygon2D" parent="wire/connection hub" unique_id=1506108844]
+position = Vector2(-1040, 0)
+polygon = PackedVector2Array(1017, -25, 1073, -38, 1064, 25, 1002, 32)
+
+[node name="Line2D" type="Line2D" parent="wire" unique_id=518968986]
+width = 30.91
+
+[node name="wire head" type="Area2D" parent="wire" unique_id=326603318]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/wire head" unique_id=713097670]
+visible = false
+position = Vector2(8, -0.5)
+shape = SubResource("RectangleShape2D_172du")
+
+[node name="head poly" type="Polygon2D" parent="wire/wire head" unique_id=96220687]
+position = Vector2(-16, 1)
+polygon = PackedVector2Array(0, -50, 50, -50, 50, 50, 0, 50)
+
+[node name="Label" type="Label" parent="." unique_id=1553075197]
+offset_left = 586.0
+offset_top = 277.0
+offset_right = 828.0
+offset_bottom = 300.0
+scale = Vector2(1.3599962, 1.3199949)
+text = "Congratulationensi! you winnn!"
+
+[connection signal="area_entered" from="wire/connection hub" to="wire" method="_on_connection_hub_area_entered"]
+[connection signal="area_exited" from="wire/connection hub" to="wire" method="_on_connection_hub_area_exited"]
+[connection signal="input_event" from="wire/wire head" to="wire" method="_on_wire_head_input_event"]
