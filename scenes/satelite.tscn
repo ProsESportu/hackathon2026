@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://dp61ypndoplp"]
 
-[ext_resource type="Script" path="res://scenes/satelite.gd" id="1_amfgn"]
+[ext_resource type="Script" uid="uid://b751elgmu7xvd" path="res://scenes/satelite.gd" id="1_amfgn"]
 [ext_resource type="Texture2D" uid="uid://bil3kgaq56265" path="res://OIP-4121368521.jpg" id="1_qjwp1"]
 
 [sub_resource type="Gradient" id="Gradient_amfgn"]
