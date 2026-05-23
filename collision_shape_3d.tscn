@@ -46,19 +46,81 @@ emission_texture = SubResource("NoiseTexture2D_e68kw")
 [sub_resource type="SphereMesh" id="SphereMesh_lixys"]
 material = SubResource("StandardMaterial3D_e68kw")
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_lixys"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a87sn"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_pv212"]
+material = SubResource("StandardMaterial3D_a87sn")
+
+[sub_resource type="Animation" id="Animation_lixys"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ziemia axis:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_a87sn"]
+resource_name = "orbit ziemia"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ziemia axis:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pv212"]
+_data = {
+&"RESET": SubResource("Animation_lixys"),
+&"orbit ziemia": SubResource("Animation_a87sn")
+}
+
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=856181904]
 environment = SubResource("Environment_a87sn")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=79492733]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9810438)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.1733923)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=527136251]
+[node name="Słońce" type="StaticBody3D" parent="." unique_id=527136251]
 physics_material_override = SubResource("PhysicsMaterial_e68kw")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=150599732]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce" unique_id=150599732]
 shape = SubResource("SphereShape3D_e68kw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=987745747]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce" unique_id=987745747]
 mesh = SubResource("SphereMesh_lixys")
+
+[node name="ziemia axis" type="Node3D" parent="Słońce" unique_id=429460865]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+
+[node name="Ziemia" type="RigidBody3D" parent="Słońce/ziemia axis" unique_id=1654913973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4792461, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/ziemia axis/Ziemia" unique_id=2002238074]
+shape = SubResource("SphereShape3D_lixys")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/ziemia axis/Ziemia" unique_id=938367271]
+mesh = SubResource("SphereMesh_pv212")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Słońce" unique_id=938859443]
+libraries/ = SubResource("AnimationLibrary_pv212")
+autoplay = &"orbit ziemia"
+speed_scale = 0.1
