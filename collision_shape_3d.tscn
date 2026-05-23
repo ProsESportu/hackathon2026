@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
-offsets = PackedFloat32Array(0, 0.8604651, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.07984487, 0.07984487, 0.07984487, 1, 0.12256441, 0.12256441, 0.12256441, 1, 0.110867396, 0.110867396, 0.110867396, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_a87sn"]
 noise_type = 0
@@ -23,8 +23,10 @@ sky_material = SubResource("PanoramaSkyMaterial_xdl8v")
 
 [sub_resource type="Environment" id="Environment_a87sn"]
 background_mode = 2
+background_energy_multiplier = 0.6
 sky = SubResource("Sky_lixys")
-tonemap_mode = 2
+ambient_light_source = 1
+reflected_light_source = 1
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e68kw"]
 
@@ -80,9 +82,6 @@ _data = {
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=856181904]
 environment = SubResource("Environment_a87sn")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=79492733]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.1733923)
-
 [node name="Słońce" type="StaticBody3D" parent="." unique_id=527136251]
 physics_material_override = SubResource("PhysicsMaterial_e68kw")
 
@@ -104,7 +103,12 @@ shape = SubResource("SphereShape3D_lixys")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/ziemia axis/Ziemia" unique_id=938367271]
 mesh = SubResource("SphereMesh_pv212")
 
+[node name="Camera3D" type="Camera3D" parent="Słońce/ziemia axis/Ziemia" unique_id=79492733]
+transform = Transform3D(0.001780227, 0, -0.99999845, 0, 1, 0, 0.99999845, 0, 0.001780227, -0.98088145, 0, -0.018162072)
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Słońce" unique_id=938859443]
 libraries/ = SubResource("AnimationLibrary_pv212")
 autoplay = &"orbit ziemia"
 speed_scale = 0.1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
