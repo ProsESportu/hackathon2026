@@ -14,3 +14,4 @@ var tle_line1: String = ""
 var tle_line2: String = ""
 var photo_url: String = ""
 var photo_image: Image = null
+var description: String = ""

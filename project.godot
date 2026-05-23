@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 InputBridge="*res://scripts/input_bridge.gd"
 MinigameBroadcaster="*res://scripts/minigame_broadcaster.gd"
 SatelliteService="*res://scripts/satellite_service.gd"
+GeminiService="*res://scripts/gemini_service.gd"
 
 [editor]
 
