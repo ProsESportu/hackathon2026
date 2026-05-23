@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://rf1v4ikjatxb"]
+
+[sub_resource type="Gradient" id="Gradient_lixys"]
+offsets = PackedFloat32Array(0, 0.8604651, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a87sn"]
+noise_type = 0
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pv212"]
+noise = SubResource("FastNoiseLite_a87sn")
+color_ramp = SubResource("Gradient_lixys")
+seamless = true
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
+panorama = SubResource("NoiseTexture2D_pv212")
+
+[sub_resource type="Sky" id="Sky_lixys"]
+sky_material = SubResource("PanoramaSkyMaterial_xdl8v")
+
+[sub_resource type="Environment" id="Environment_a87sn"]
+background_mode = 2
+sky = SubResource("Sky_lixys")
+tonemap_mode = 2
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e68kw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_e68kw"]
+
+[sub_resource type="Gradient" id="Gradient_e68kw"]
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lixys"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e68kw"]
+noise = SubResource("FastNoiseLite_lixys")
+color_ramp = SubResource("Gradient_e68kw")
+seamless = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e68kw"]
+albedo_color = Color(1, 1, 0, 1)
+emission_enabled = true
+emission_texture = SubResource("NoiseTexture2D_e68kw")
+
+[sub_resource type="SphereMesh" id="SphereMesh_lixys"]
+material = SubResource("StandardMaterial3D_e68kw")
+
+[node name="Node3D" type="Node3D" unique_id=1479732840]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=856181904]
+environment = SubResource("Environment_a87sn")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=79492733]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.9810438)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=527136251]
+physics_material_override = SubResource("PhysicsMaterial_e68kw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=150599732]
+shape = SubResource("SphereShape3D_e68kw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=987745747]
+mesh = SubResource("SphereMesh_lixys")
