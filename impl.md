@@ -16,10 +16,10 @@ In flight_controller.gd::on_orbit_entered:
 - Add a new constant ORBIT_ENTRY_DROP_RADIUS: float = 0.655 (midpoint between Earth's surface at EARTH_RADIUS = 0.51 and OrbitManager.ORBIT_ENTER_RADIUS = 0.80). Hard-coded value, with a comment explaining the relationship — neither file should import the other's constant.
 - Replace body with:
 func on_orbit_entered(_earth_world_velocity: Vector3) -> void:
-    in_orbit = true
-    velocity = Vector3.ZERO
-    var dir: Vector3 = position.normalized() if position.length() > 0.001 else Vector3.BACK
-    position = dir * ORBIT_ENTRY_DROP_RADIUS
+	in_orbit = true
+	velocity = Vector3.ZERO
+	var dir: Vector3 = position.normalized() if position.length() > 0.001 else Vector3.BACK
+	position = dir * ORBIT_ENTRY_DROP_RADIUS
 - The _earth_world_velocity arg becomes unused (prefixed with _). The previous subtraction is now meaningless because we're zeroing velocity anyway, and the velocity clamp from the prior plan is also obsolete.
 - position is local to EarthFrame at this point (the player is reparented BEFORE on_orbit_entered is called — see orbit_manager.gd:78), and EarthFrame.global_position == Earth.global_position, so position.length() is the player's distance from Earth's center. Normalizing it preserves the entry direction; multiplying by 0.655 snaps to the midpoint shell.
 
@@ -39,11 +39,11 @@ signal proximity_alert_cleared
 - Add state: var _proximity_active: bool = false.
 - In _process inside match state: State.IN_ORBIT: branch, after the existing exit/warn checks, add:
 if dist < PROXIMITY_WARN_RADIUS and not _proximity_active:
-    _proximity_active = true
-    proximity_alert_started.emit()
+	_proximity_active = true
+	proximity_alert_started.emit()
 elif dist > PROXIMITY_CLEAR_RADIUS and _proximity_active:
-    _proximity_active = false
-    proximity_alert_cleared.emit()
+	_proximity_active = false
+	proximity_alert_cleared.emit()
 - In _exit_orbit: if _proximity_active, emit cleared and reset the flag so the warning doesn't persist after orbit exit.
 
 In scenes/HUD.tscn:
@@ -55,18 +55,18 @@ In scripts/hud.gd:
 - In _ready, connect orbit_manager.proximity_alert_started.connect(_on_proximity_started) and …cleared.connect(_on_proximity_cleared).
 - Handlers:
 func _on_proximity_started() -> void:
-    proximity_label.visible = true
-    proximity_label.modulate.a = 1.0
-    if _proximity_tween != null and _proximity_tween.is_valid():
-        _proximity_tween.kill()
-    _proximity_tween = create_tween().set_loops()
-    _proximity_tween.tween_property(proximity_label, "modulate:a", 0.3, 0.4)
-    _proximity_tween.tween_property(proximity_label, "modulate:a", 1.0, 0.4)
+	proximity_label.visible = true
+	proximity_label.modulate.a = 1.0
+	if _proximity_tween != null and _proximity_tween.is_valid():
+		_proximity_tween.kill()
+	_proximity_tween = create_tween().set_loops()
+	_proximity_tween.tween_property(proximity_label, "modulate:a", 0.3, 0.4)
+	_proximity_tween.tween_property(proximity_label, "modulate:a", 1.0, 0.4)
 
 func _on_proximity_cleared() -> void:
-    if _proximity_tween != null and _proximity_tween.is_valid():
-        _proximity_tween.kill()
-    proximity_label.visible = false
+	if _proximity_tween != null and _proximity_tween.is_valid():
+		_proximity_tween.kill()
+	proximity_label.visible = false
 
 The tween runs at normal time_scale = 1.0 (proximity only triggers while in orbit, after the cinematic has restored normal time), so the 0.4s pulse is real-time.
 

@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://cx3co5eywic1f"]
+
+[ext_resource type="Script" uid="uid://7nyvjlcvsomc" path="res://wire.gd" id="1_lg2bt"]
+[ext_resource type="Script" uid="uid://bux5etfu3o1hm" path="res://mouse_follower.gd" id="2_172du"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_172du"]
+size = Vector2(52, 101)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2amdq"]
+radius = 25.70992
+
+[node name="Connect wires" type="Node2D" unique_id=2114735958]
+
+[node name="wire" type="Node2D" parent="." unique_id=1788402074]
+position = Vector2(51, 0)
+script = ExtResource("1_lg2bt")
+
+[node name="Line2D" type="Line2D" parent="wire" unique_id=518968986]
+
+[node name="to connect" type="Area2D" parent="wire" unique_id=1109760814]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/to connect" unique_id=713097670]
+visible = false
+position = Vector2(25, -0.5)
+shape = SubResource("RectangleShape2D_172du")
+
+[node name="Polygon2D" type="Polygon2D" parent="wire/to connect" unique_id=96220687]
+polygon = PackedVector2Array(0, -50, 50, -50, 50, 50, 0, 50)
+
+[node name="connection hub" type="Area2D" parent="wire" unique_id=1330322737]
+position = Vector2(1040, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="wire/connection hub" unique_id=1979673023]
+shape = SubResource("CircleShape2D_2amdq")
+metadata/_edit_lock_ = true
+
+[node name="mouse follower" type="Node2D" parent="." unique_id=1737081728]
+script = ExtResource("2_172du")
+
+[node name="Polygon2D" type="Polygon2D" parent="mouse follower" unique_id=948760322]
+polygon = PackedVector2Array(-1, 1, 18, 1, 13, 7, 19, 15, 14, 20, 8, 12, 0, 18)
+
+[connection signal="area_entered" from="wire/to connect" to="wire" method="_on_to_connect_area_entered"]
+[connection signal="area_exited" from="wire/to connect" to="wire" method="_on_to_connect_area_exited"]
+[connection signal="input_event" from="wire/to connect" to="wire" method="_on_to_connect_input_event"]
