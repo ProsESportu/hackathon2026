@@ -22,12 +22,14 @@ var _look_dy: float = 0.0  # pitch delta (positive = look up)
 
 @export var mouse_sensitivity: float = 0.0022  # rad per pixel
 @export var invert_mouse_y: bool = false
+var server=UDPServer.new()
 
 func _ready() -> void:
 	# Capture mouse on startup so flight feels right immediately.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	# Make sure we still get input even if no other node grabs it.
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	server.listen(5000)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -55,6 +57,17 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	# Poll keyboard into the rate axes. is_physical_key_pressed uses physical
 	# layout so this still works on non-QWERTY layouts.
+	server.poll()
+	
+	if server.is_connection_available():
+		var peer = server.take_connection()
+		var packet = peer.get_packet()
+		print("Accepted peer: %s:%s" % [peer.get_packet_ip(), peer.get_packet_port()])
+		var res=packet.get_string_from_utf8()
+		print("Received data: %s" % [res])
+		res=res.split(",")
+		_look_dx=float(res[0])*0.0001
+		_look_dy=float(res[1])*0.0001
 	roll = _axis(KEY_E, KEY_Q)        # E = roll right (+), Q = roll left (-)
 	thrust = _axis(KEY_W, KEY_S)
 	strafe = _axis(KEY_D, KEY_A)
