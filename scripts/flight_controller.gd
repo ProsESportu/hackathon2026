@@ -1,4 +1,5 @@
 extends Node3D
+
 ## 6-DoF arcade flight for the player satellite.
 ## Reads exclusively from the InputBridge autoload — never from Input directly.
 ## Constants mirror the web prototype's tuning (see CLAUDE.md "Quick reference").
@@ -115,6 +116,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		#return
 	velocity=Vector3.ZERO
 	game_over_screen.visible=true
+	#GlobalData.can_move = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 

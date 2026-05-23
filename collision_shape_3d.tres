@@ -1,0 +1,15 @@
+[gd_resource type="VisualShader" format=3 uid="uid://biy27ebt64fu"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_81bde"]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_wbt33"]
+input_name = "color"
+
+[resource]
+nodes/vertex/0/position = Vector2(528, 96)
+nodes/vertex/2/node = SubResource("VisualShaderNodeInput_81bde")
+nodes/vertex/2/position = Vector2(144, 176)
+nodes/vertex/3/node = SubResource("VisualShaderNodeInput_wbt33")
+nodes/vertex/3/position = Vector2(80, 320)
+nodes/vertex/connections = PackedInt32Array(2, 0, 0, 4, 3, 0, 0, 6)

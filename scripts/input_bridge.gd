@@ -15,7 +15,10 @@ var strafe: float = 0.0  # +1 = right     (A/D)
 var lift: float = 0.0    # +1 = up        (Shift/Ctrl)
 var brake: bool = false  # Space — actively damps linear velocity to a halt
 var focus: float = 1.0   # 0..1 — EEG attention; multiplies scan speed, low focus adds reticle jitter
+var can_move: bool = true
 
+# One-shot edge events. Listen with InputBridge.interact_pressed.connect(...).
+signal interact_pressed   # X key tapped
 
 # ---- mouse-look (radians, accumulated per frame, consumed by flight controller) ----
 var _look_dx: float = 0.0  # yaw delta (positive = look right)
@@ -60,6 +63,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			else:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		elif event.keycode == KEY_X:
+			interact_pressed.emit()
 		return
 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
