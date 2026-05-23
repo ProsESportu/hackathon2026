@@ -220,8 +220,8 @@ radius = 0.005
 height = 0.01
 
 [sub_resource type="Curve" id="Curve_3ps66"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.15207374, 1), 0.0, 0.0, 0, 0, Vector2(0.8041474, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 4
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.2972973), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="satelite" type="Node3D" unique_id=1762155981]
 transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
@@ -251,13 +251,13 @@ mesh = SubResource("ArrayMesh_fgywp")
 transform = Transform3D(-100, -1.4210855e-12, 1.5099578e-05, -1.5099578e-05, 2.9802322e-05, -99.99999, -2.1316282e-12, -99.99999, -2.3841858e-05, 0, 1, 0)
 mesh = SubResource("ArrayMesh_ihtlg")
 
-[node name="CPUParticles3D" type="CPUParticles3D" parent="." unique_id=966106988]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8320313, 0)
-amount = 12
+[node name="CPUParticles3D" type="CPUParticles3D" parent="dysza" unique_id=966106988]
+transform = Transform3D(-0.01, -1.5099579e-09, -3.0789404e-16, -1.4683922e-16, 2.3841864e-09, -0.010000001, 1.5099579e-09, -0.010000001, -2.9802327e-09, -2.7662903e-09, 4.3679043e-09, -0.018320315)
+amount = 13
 mesh = SubResource("SphereMesh_7xrto")
 direction = Vector3(0, 1, 0)
+spread = 0.0
 gravity = Vector3(0, 0, 0)
 initial_velocity_min = 3.0
 initial_velocity_max = 10.0
-scale_amount_min = 0.5
 scale_amount_curve = SubResource("Curve_3ps66")
