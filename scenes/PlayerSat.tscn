@@ -13,7 +13,6 @@ script = ExtResource("1_flightctl")
 current = true
 fov = 70.0
 near = 0.001
-far = 100.0
 
 [node name="Area3D" type="Area3D" parent="Camera" unique_id=159510815]
 
