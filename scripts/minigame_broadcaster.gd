@@ -36,6 +36,15 @@ func send_minigame(id: int) -> void:
 
 func get_random_minigame_id() -> int:
 	return randi_range(1, MINIGAME_COUNT)
+func send_distance(dist:float)->void:
+	var payload: PackedByteArray = ("%d" % dist).to_utf8_buffer()
+	
+	# Check for transmission errors
+	var err := _peer.put_packet(payload)
+	if err == OK:
+		print("[MinigameBroadcaster] sent distamce id=%d to %s:%d" % [dist, PI_IP, PI_PORT])
+	else:
+		push_error("[MinigameBroadcaster] failed to send dsitcance packet: %d" % err)
 
 func _process(_delta: float) -> void:
 	_server.poll()

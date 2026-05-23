@@ -65,6 +65,9 @@ const NORAD_NAMES: Dictionary = {
 	40376: "SMAP",
 }
 
+
+func get_satellites()->Array[Node3D]:
+	return _satellites
 const FALLBACK_DATA: Dictionary = {
 	25544: {"country": "ISS", "launch": "1998-11-20", "type": "PAYLOAD", "period": 92.9, "inclination": 51.6},
 	41335: {"country": "US/DE", "launch": "2018-05-22", "type": "PAYLOAD", "period": 94.6, "inclination": 89.0},
@@ -81,6 +84,7 @@ const FALLBACK_DATA: Dictionary = {
 }
 
 
+>>>>>>> 5b52dd0573222d02a6b4246d2e7fb93748cd3c36
 func _ready() -> void:
 	# 1. Bezpieczne przypisanie Słońca
 	sun = get_node_or_null(SUN_PATH)

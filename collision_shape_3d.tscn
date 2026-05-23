@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c0emdshsdeoui" path="res://8k_earth_daymap.jpg" id="6_fqmc4"]
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
+[ext_resource type="Shader" uid="uid://bkd3ds7egm3lr" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -39,6 +40,7 @@ tonemap_mode = 2
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e68kw"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_e68kw"]
+radius = 5.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lixys"]
 
@@ -123,6 +125,33 @@ _data = {
 &"orbit ziemia": SubResource("Animation_a87sn")
 }
 
+[sub_resource type="Theme" id="Theme_fqmc4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rqkj4"]
+shader = ExtResource("9_huu8u")
+shader_parameter/border_color = Color(0, 0, 0, 1)
+shader_parameter/border_size = 0.15
+shader_parameter/softness = 0.1
+
+[sub_resource type="Gradient" id="Gradient_fqmc4"]
+offsets = PackedFloat32Array(0, 0.68524593)
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_huu8u"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rqkj4"]
+noise = SubResource("FastNoiseLite_huu8u")
+color_ramp = SubResource("Gradient_fqmc4")
+seamless = true
+seamless_blend_skirt = 0.658
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1dcfr"]
+texture = SubResource("NoiseTexture2D_rqkj4")
+texture_margin_left = 100.0
+texture_margin_top = 100.0
+texture_margin_right = 100.0
+texture_margin_bottom = 100.0
+
 [sub_resource type="Theme" id="Theme_pv212"]
 default_font_size = 100
 
@@ -154,7 +183,6 @@ transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 script = ExtResource("1_a87sn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce" unique_id=150599732]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_e68kw")
 
 [node name="ziemia axis" type="Node3D" parent="Słońce" unique_id=429460865]
@@ -197,8 +225,20 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = SubResource("Theme_fqmc4")
 
-[node name="Button" type="Button" parent="GameOverScreen" unique_id=1923427968]
+[node name="Panel" type="Panel" parent="GameOverScreen" unique_id=1425422717]
+material = SubResource("ShaderMaterial_rqkj4")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_1dcfr")
+
+[node name="Game again btn" type="Button" parent="GameOverScreen" unique_id=1923427968]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -214,3 +254,5 @@ grow_vertical = 2
 theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
+
+[connection signal="pressed" from="GameOverScreen/Game again btn" to="PlayerSat" method="_on_button_pressed"]

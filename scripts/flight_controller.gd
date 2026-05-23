@@ -18,17 +18,32 @@ const ORBIT_ENTRY_DROP_RADIUS: float = 0.655 # midpoint between EARTH_RADIUS (0.
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
 @onready var game_over_screen: Control = %GameOverScreen
+const PI_IP: String = "192.168.0.128"
+const PI_PORT: int = 5004
 
+var _peer: PacketPeerUDP
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
 var velocity: Vector3 = Vector3.ZERO
 var in_orbit: bool = false
+var target_id:int=0
 
 @onready var earth: Node3D = get_node_or_null("../Słońce/ziemia axis/Ziemia")
+@onready var satellite_spawner: Node3D = $"../EarthFrame/SatelliteSpawner"
 
 func _ready() -> void:
+	_peer = PacketPeerUDP.new()
+	# Bind is mandatory in Godot 4 to open the local socket
+	var err := _peer.bind(0)  
+	if err != OK:
+		push_error("[distance] bind failed: %d" % err)
+		return
+	
+	# Set target destination
+	_peer.set_dest_address(PI_IP, PI_PORT)
+	print("[distance] ready, will send to %s:%d" % [PI_IP, PI_PORT])
 	#connect game over button to function
-	game_over_screen.get_child(0).connect("pressed",_on_button_pressed)
+	%"Game again btn".connect("pressed",_on_button_pressed)
 	# Only nudge to a default orbit if the scene placed us at origin.
 	if global_position.length() < 0.001:
 		global_position = Vector3(0.0, 0.0, START_ALT_SCENE)
@@ -38,6 +53,17 @@ func _process(delta: float) -> void:
 	_apply_angular_velocity(delta)
 	_apply_thrust(delta)
 	_integrate_position(delta)
+	var sattelite:Node3D=satellite_spawner.get_satellites()[target_id]
+	
+	# Check for transmission errors
+	var disatnce_vector=sattelite.global_position.distance_to(global_position)
+	var distance=(global_transform.origin.direction_to(sattelite.global_transform.origin).normalized().dot(rotation.normalized())*100)
+	var payload: PackedByteArray = ("%f,%f" % [distance,disatnce_vector]).to_utf8_buffer()
+	var err := _peer.put_packet(payload)
+	if err == OK:
+		print("[distance] sent distamce %s to %s:%d" % [payload.get_string_from_utf8(), PI_IP, PI_PORT])
+	else:
+		push_error("[distance] failed to send dsitcance packet: %d" % err)
 	
 func _apply_mouse_look() -> void:
 	# Mouse rotates the body directly — no inertia, snappy aim.
