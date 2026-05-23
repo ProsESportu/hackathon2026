@@ -10,10 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Nowy projekt gry"
-run/main_scene="res://collision_shape_3d.tscn"
+config/name="Orbital Hunter"
+run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+InputBridge="*res://scripts/input_bridge.gd"
 
 [physics]
 
