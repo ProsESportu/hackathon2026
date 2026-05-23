@@ -66,7 +66,11 @@ func _on_satcat_completed(result: int, response_code: int, headers: PackedString
 	client.queue_free()
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
 		if response_code == 401:
-			_auth_cookie = "" # Reset on unauthorized
+			_auth_cookie = ""
+			_queued_requests.append(norad_id)
+			if not _is_authenticating:
+				_authenticate()
+			return
 		satellite_fetch_failed.emit(norad_id, "Satcat fetch failed %d" % response_code)
 		return
 		
@@ -108,6 +112,12 @@ func _fetch_tle(sat_data: SatelliteData) -> void:
 func _on_tle_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, sat_data: SatelliteData, client: HTTPRequest) -> void:
 	client.queue_free()
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+		if response_code == 401:
+			_auth_cookie = ""
+			_queued_requests.append(sat_data.norad_id)
+			if not _is_authenticating:
+				_authenticate()
+			return
 		satellite_fetch_failed.emit(sat_data.norad_id, "TLE fetch failed %d" % response_code)
 		return
 		
