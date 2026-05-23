@@ -5,16 +5,19 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 0.8
-const MAX_SPEED: float = 25              # ~16 km/s in scene units
+const THRUST_ACCEL: float = 0.15
+const MAX_SPEED: float = 5              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
-const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius
+const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
+const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
 
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
 var velocity: Vector3 = Vector3.ZERO
+
+@onready var earth: Node3D = get_node_or_null("../Słońce/ziemia axis/Ziemia")
 
 func _ready() -> void:
 	# Only nudge to a default orbit if the scene placed us at origin.
@@ -27,6 +30,7 @@ func _process(delta: float) -> void:
 	_apply_thrust(delta)
 	_integrate_position(delta)
 	_enforce_earth_floor()
+	_enforce_earth_solid()
 
 func _apply_mouse_look() -> void:
 	# Mouse rotates the body directly — no inertia, snappy aim.
@@ -74,4 +78,14 @@ func _enforce_earth_floor() -> void:
 	var r: float = global_position.length()
 	if r < EARTH_COLLISION_FLOOR:
 		global_position = global_position.normalized() * EARTH_COLLISION_FLOOR
+		velocity = Vector3.ZERO
+
+func _enforce_earth_solid() -> void:
+	if earth == null:
+		return
+	var to_player: Vector3 = global_position - earth.global_position
+	var d: float = to_player.length()
+	if d < EARTH_RADIUS:
+		var dir: Vector3 = to_player / d if d > 0.0001 else Vector3.UP
+		global_position = earth.global_position + dir * EARTH_RADIUS
 		velocity = Vector3.ZERO
