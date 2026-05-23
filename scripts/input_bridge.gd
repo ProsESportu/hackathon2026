@@ -16,12 +16,17 @@ var lift: float = 0.0    # +1 = up        (Shift/Ctrl)
 var brake: bool = false  # Space — actively damps linear velocity to a halt
 var focus: float = 1.0   # 0..1 — EEG attention; multiplies scan speed, low focus adds reticle jitter
 
+
 # ---- mouse-look (radians, accumulated per frame, consumed by flight controller) ----
 var _look_dx: float = 0.0  # yaw delta (positive = look right)
 var _look_dy: float = 0.0  # pitch delta (positive = look up)
 
 @export var mouse_sensitivity: float = 0.0022  # rad per pixel
 @export var invert_mouse_y: bool = false
+@export var gamepad_look_speed: float = 2.5    # rad/sec at full right-stick deflection
+@export var invert_gamepad_y: bool = false
+@export var trigger_brake_threshold: float = 0.1
+
 var server=UDPServer.new()
 
 func _ready() -> void:
@@ -55,12 +60,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+
 	# Poll keyboard into the rate axes. is_physical_key_pressed uses physical
 	# layout so this still works on non-QWERTY layouts.
 	server.poll()
 	brake = Input.is_physical_key_pressed(KEY_SPACE)
 	roll = _axis(KEY_E, KEY_Q)        # E = roll right (+), Q = roll left (-)
-	thrust = _axis(KEY_W, KEY_S)
+	var key_thrust := _axis(KEY_W, KEY_S)
 	strafe = _axis(KEY_D, KEY_A)
 	lift = _axis(KEY_SHIFT, KEY_CTRL)
 	
