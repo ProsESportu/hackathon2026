@@ -12,7 +12,8 @@ var yaw: float = 0.0     # +1 = nose right (same)
 var roll: float = 0.0    # +1 = roll right (Q/E)
 var thrust: float = 0.0  # +1 = forward   (W/S)
 var strafe: float = 0.0  # +1 = right     (A/D)
-var lift: float = 0.0    # +1 = up        (Space/Ctrl)
+var lift: float = 0.0    # +1 = up        (Shift/Ctrl)
+var brake: bool = false  # Space — actively damps linear velocity to a halt
 var focus: float = 1.0   # 0..1 — EEG attention; multiplies scan speed, low focus adds reticle jitter
 
 # ---- mouse-look (radians, accumulated per frame, consumed by flight controller) ----
@@ -57,7 +58,8 @@ func _process(_delta: float) -> void:
 	roll = _axis(KEY_E, KEY_Q)        # E = roll right (+), Q = roll left (-)
 	thrust = _axis(KEY_W, KEY_S)
 	strafe = _axis(KEY_D, KEY_A)
-	lift = _axis(KEY_SPACE, KEY_CTRL)
+	lift = _axis(KEY_SHIFT, KEY_CTRL)
+	brake = Input.is_physical_key_pressed(KEY_SPACE)
 
 static func _axis(positive: Key, negative: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))

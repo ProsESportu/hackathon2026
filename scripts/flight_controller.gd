@@ -5,10 +5,12 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 0.8
-const MAX_SPEED: float = 25              # ~16 km/s in scene units
+const THRUST_ACCEL: float = 0.15
+const MAX_SPEED: float = 5              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
-const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius
+const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
+const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
+const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
 @onready var game_over_screen: Control = $"../GameOverScreen"
@@ -16,6 +18,8 @@ const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
 var velocity: Vector3 = Vector3.ZERO
+
+@onready var earth: Node3D = get_node_or_null("../Słońce/ziemia axis/Ziemia")
 
 func _ready() -> void:
 	# Only nudge to a default orbit if the scene placed us at origin.
@@ -67,8 +71,12 @@ func _apply_thrust(delta: float) -> void:
 		velocity *= MAX_SPEED / sp
 	velocity *= pow(VEL_DAMP_PER_SEC, delta)
 
+	if InputBridge.brake:
+		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
+
 func _integrate_position(delta: float) -> void:
 	global_position += velocity * delta
+
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	velocity=Vector3.ZERO
@@ -77,3 +85,19 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 
 func _on_button_pressed() -> void:
 	get_tree().reload_current_scene()
+
+func _enforce_earth_floor() -> void:
+	var r: float = global_position.length()
+	if r < EARTH_COLLISION_FLOOR:
+		global_position = global_position.normalized() * EARTH_COLLISION_FLOOR
+		velocity = Vector3.ZERO
+
+func _enforce_earth_solid() -> void:
+	if earth == null:
+		return
+	var to_player: Vector3 = global_position - earth.global_position
+	var d: float = to_player.length()
+	if d < EARTH_RADIUS:
+		var dir: Vector3 = to_player / d if d > 0.0001 else Vector3.UP
+		global_position = earth.global_position + dir * EARTH_RADIUS
+		velocity = Vector3.ZERO
