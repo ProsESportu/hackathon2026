@@ -8,6 +8,7 @@ const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retai
 const THRUST_ACCEL: float = 0.15
 const MAX_SPEED: float = 5              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
+const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
 const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
@@ -70,6 +71,9 @@ func _apply_thrust(delta: float) -> void:
 	if sp > MAX_SPEED:
 		velocity *= MAX_SPEED / sp
 	velocity *= pow(VEL_DAMP_PER_SEC, delta)
+
+	if InputBridge.brake:
+		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
 
 func _integrate_position(delta: float) -> void:
 	global_position += velocity * delta
