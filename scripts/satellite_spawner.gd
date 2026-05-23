@@ -30,7 +30,6 @@ enum State { IN_SPACE, IN_ORBIT }
 var state: State = State.IN_SPACE
 var _satellites: Array[Node3D] = []
 var _current_target: Node3D = null
-var _consumed_target: Node3D = null
 
 var sun: Node3D
 var player: Node3D
@@ -129,15 +128,6 @@ func _process(delta: float) -> void:
 			var dir = OrbitalPosition.compute_direction(sat.data.tle_line1, sat.data.tle_line2)
 			sat.position = dir * SAT_ORBIT_RADIUS
 
-	if _consumed_target != null:
-		var cam = get_viewport().get_camera_3d()
-		if cam and not cam.is_position_in_frustum(_consumed_target.global_position):
-			var old_id = _consumed_target.get_meta("norad_id", -1)
-			_satellites.erase(_consumed_target)
-			_consumed_target.queue_free()
-			_consumed_target = null
-			_spawn_satellite(old_id)
-
 
 # --- Spawning & API Fetching -------------------------------------------------
 
@@ -193,7 +183,13 @@ func _on_network_data_failed(norad_id: int, reason: String) -> void:
 	print("[Spawner] Problem z API dla ID ", norad_id, ": ", reason, " — using local fallback")
 	var fallback := SatelliteData.new()
 	fallback.norad_id = norad_id
-	fallback.name = NORAD_NAMES.get(norad_id, "Satellite %d" % norad_id)
+	var display_name: String = NORAD_NAMES.get(norad_id, "")
+	if display_name.is_empty():
+		for entry in SatelliteCatalog.SATELLITES:
+			if entry["norad_id"] == norad_id:
+				display_name = entry["display_name"]
+				break
+	fallback.name = display_name if not display_name.is_empty() else "Satellite %d" % norad_id
 	
 	if FALLBACK_DATA.has(norad_id):
 		var details = FALLBACK_DATA[norad_id]
@@ -230,8 +226,6 @@ func _update_proximity() -> void:
 	var nearest: Node3D = null
 	var nearest_dist: float = INF
 	for sat in _satellites:
-		if sat == _consumed_target:
-			continue
 		var d: float = player_pos.distance_to(sat.global_position)
 		if d < nearest_dist:
 			nearest_dist = d
@@ -264,7 +258,11 @@ func _on_interact_pressed() -> void:
 
 
 func consume_current() -> void:
-	if _current_target != null:
-		_consumed_target = _current_target
+	if _current_target == null:
+		return
+	var old_id: int = _current_target.get_meta("norad_id", -1)
+	_satellites.erase(_current_target)
+	_current_target.queue_free()
 	_current_target = null
 	satellite_out_of_range.emit()
+	_spawn_satellite(old_id)
