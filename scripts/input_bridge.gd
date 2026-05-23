@@ -16,6 +16,7 @@ var lift: float = 0.0    # +1 = up        (Shift/Ctrl)
 var brake: bool = false  # Space — actively damps linear velocity to a halt
 var focus: float = 1.0   # 0..1 — EEG attention; multiplies scan speed, low focus adds reticle jitter
 var can_move: bool = true
+var disabled_input: bool = false
 
 # One-shot edge events. Listen with InputBridge.interact_pressed.connect(...).
 signal interact_pressed   # X key tapped
@@ -47,6 +48,8 @@ func _ready() -> void:
 	server.listen(5000)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if disabled_input:
+		return
 	if event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			# Mouse right -> yaw right (look right)
@@ -74,7 +77,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	var use_local := input_mode != InputMode.UDP
 	var use_udp := input_mode != InputMode.LOCAL
-
+	
 	# Poll keyboard into the rate axes. is_physical_key_pressed uses physical
 	# layout so this still works on non-QWERTY layouts.
 	#server.poll()

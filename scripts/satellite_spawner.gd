@@ -65,8 +65,26 @@ const NORAD_NAMES: Dictionary = {
 	40376: "SMAP",
 }
 
+
 func get_satellites()->Array[Node3D]:
 	return _satellites
+const FALLBACK_DATA: Dictionary = {
+	25544: {"country": "ISS", "launch": "1998-11-20", "type": "PAYLOAD", "period": 92.9, "inclination": 51.6},
+	41335: {"country": "US/DE", "launch": "2018-05-22", "type": "PAYLOAD", "period": 94.6, "inclination": 89.0},
+	43476: {"country": "US", "launch": "2018-04-18", "type": "PAYLOAD", "period": 19685.2, "inclination": 28.5},
+	28485: {"country": "US", "launch": "2004-07-15", "type": "PAYLOAD", "period": 98.8, "inclination": 98.2},
+	25994: {"country": "US", "launch": "1999-12-18", "type": "PAYLOAD", "period": 98.8, "inclination": 98.2},
+	27424: {"country": "US", "launch": "2002-05-04", "type": "PAYLOAD", "period": 98.8, "inclination": 98.2},
+	40059: {"country": "US", "launch": "2014-07-02", "type": "PAYLOAD", "period": 98.8, "inclination": 98.2},
+	39086: {"country": "US", "launch": "2013-02-11", "type": "PAYLOAD", "period": 98.8, "inclination": 98.2},
+	47954: {"country": "US", "launch": "2021-03-22", "type": "PAYLOAD", "period": 95.3, "inclination": 97.5},
+	44387: {"country": "US", "launch": "2019-06-25", "type": "PAYLOAD", "period": 93.3, "inclination": 24.0},
+	43013: {"country": "US", "launch": "2017-11-18", "type": "PAYLOAD", "period": 101.4, "inclination": 98.7},
+	40376: {"country": "US", "launch": "2015-01-31", "type": "PAYLOAD", "period": 98.5, "inclination": 98.1},
+}
+
+
+>>>>>>> 5b52dd0573222d02a6b4246d2e7fb93748cd3c36
 func _ready() -> void:
 	# 1. Bezpieczne przypisanie Słońca
 	sun = get_node_or_null(SUN_PATH)
@@ -158,7 +176,7 @@ func fetch_satellite_data(norad_id: int) -> void:
 		"Accept: application/json"
 	]
 	
-	http_client.use_threads = true
+	http_client.use_threads = false
 	
 	var url = "https://celestrak.org/satcat/records.php?CATNR=%d&FORMAT=json" % norad_id
 
@@ -226,6 +244,15 @@ func _on_network_data_failed(norad_id: int, reason: String) -> void:
 	var fallback := SatelliteData.new()
 	fallback.norad_id = norad_id
 	fallback.name = NORAD_NAMES.get(norad_id, "Satellite %d" % norad_id)
+	
+	if FALLBACK_DATA.has(norad_id):
+		var details = FALLBACK_DATA[norad_id]
+		fallback.country = details.get("country", "")
+		fallback.launch_date = details.get("launch", "")
+		fallback.object_type = details.get("type", "")
+		fallback.period_min = details.get("period", 0.0)
+		fallback.inclination_deg = details.get("inclination", 0.0)
+		
 	_on_network_data_received(fallback)
 
 
