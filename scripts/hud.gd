@@ -12,6 +12,7 @@ const PLAYER_PATH:        NodePath = ^"../PlayerSat"
 const EDGE_MARGIN_PX: float = 60.0
 
 @onready var alert_label: Label = $AlertLabel
+@onready var proximity_label: Label = $ProximityLabel
 @onready var earth_indicator: Control = $EarthIndicator
 @onready var arrow: TextureRect = $EarthIndicator/Arrow
 @onready var distance_label: Label = $EarthIndicator/DistanceLabel
@@ -24,6 +25,7 @@ const CINEMATIC_DURATION_REAL_SEC: float = 1.5
 var earth: Node3D
 var player: Node3D
 var _alert_tween: Tween
+var _proximity_tween: Tween
 var _cinematic_active: bool = false
 
 
@@ -35,6 +37,8 @@ func _ready() -> void:
 	orbit_manager.orbit_entered.connect(_on_orbit_entered)
 	orbit_manager.orbit_exit_warning.connect(_on_orbit_exit_warning)
 	orbit_manager.orbit_exited.connect(_on_orbit_exited)
+	orbit_manager.proximity_alert_started.connect(_on_proximity_started)
+	orbit_manager.proximity_alert_cleared.connect(_on_proximity_cleared)
 
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
@@ -71,6 +75,20 @@ func _on_orbit_exit_warning() -> void:
 
 func _on_orbit_exited() -> void:
 	show_alert("ORBIT LOST", Color.RED, 2.5)
+
+func _on_proximity_started() -> void:
+	proximity_label.visible = true
+	proximity_label.modulate.a = 1.0
+	if _proximity_tween != null and _proximity_tween.is_valid():
+		_proximity_tween.kill()
+	_proximity_tween = create_tween().set_loops()
+	_proximity_tween.tween_property(proximity_label, "modulate:a", 0.3, 0.4)
+	_proximity_tween.tween_property(proximity_label, "modulate:a", 1.0, 0.4)
+
+func _on_proximity_cleared() -> void:
+	if _proximity_tween != null and _proximity_tween.is_valid():
+		_proximity_tween.kill()
+	proximity_label.visible = false
 
 
 # --- Orbit-entry cinematic ----------------------------------------------------

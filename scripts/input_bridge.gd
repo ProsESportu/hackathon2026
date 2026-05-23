@@ -27,7 +27,14 @@ var _look_dy: float = 0.0  # pitch delta (positive = look up)
 @export var invert_gamepad_y: bool = false
 @export var trigger_brake_threshold: float = 0.1
 
-var server=UDPServer.new()
+enum InputMode { LOCAL, UDP, AUTO }
+@export_enum("Local", "UDP", "Auto") var input_mode: int = InputMode.AUTO
+
+var server = UDPServer.new()
+var _udp_has_input: bool = false
+var _udp_look: Vector2 = Vector2.ZERO
+var _udp_thrust: float = 0.0
+var _udp_brake: bool = false
 
 func _ready() -> void:
 	# Capture mouse on startup so flight feels right immediately.
@@ -60,6 +67,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	var use_local := input_mode != InputMode.UDP
+	var use_udp := input_mode != InputMode.LOCAL
 
 	# Poll keyboard into the rate axes. is_physical_key_pressed uses physical
 	# layout so this still works on non-QWERTY layouts.

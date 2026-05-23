@@ -7,12 +7,13 @@ const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
 const THRUST_ACCEL: float = 0.1
 const MAX_SPEED: float = 5              # ~16 km/s in scene units
-const IN_ORBIT_THRUST_ACCEL: float = 0.01   # gentler push while inside Earth's orbital bubble
-const IN_ORBIT_MAX_SPEED: float = 0.4       # so the player can't blitz through orbit and crash
+const IN_ORBIT_THRUST_ACCEL: float = 0.001   # gentler push while inside Earth's orbital bubble
+const IN_ORBIT_MAX_SPEED: float = 0.09       # so the player can't blitz through orbit and crash
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
 const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
+const ORBIT_ENTRY_DROP_RADIUS: float = 0.655 # midpoint between EARTH_RADIUS (0.51) and OrbitManager.ORBIT_ENTER_RADIUS (0.80)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
 @onready var game_over_screen: Control = %GameOverScreen
@@ -87,15 +88,11 @@ func _integrate_position(delta: float) -> void:
 	# equivalent to integrating global_position.
 	position += velocity * delta
 
-func on_orbit_entered(earth_world_velocity: Vector3) -> void:
-	# Was world-relative, now Earth-frame-relative.
-	velocity -= earth_world_velocity
+func on_orbit_entered(_earth_world_velocity: Vector3) -> void:
 	in_orbit = true
-	# Clamp inherited momentum to the orbital cap so the player can't punch
-	# straight through Earth at the moment of entry.
-	var sp: float = velocity.length()
-	if sp > IN_ORBIT_MAX_SPEED:
-		velocity *= IN_ORBIT_MAX_SPEED / sp
+	velocity = Vector3.ZERO
+	var dir: Vector3 = position.normalized() if position.length() > 0.001 else Vector3.BACK
+	position = dir * ORBIT_ENTRY_DROP_RADIUS
 
 func on_orbit_exited(earth_world_velocity: Vector3) -> void:
 	# Convert Earth-frame velocity back to world-relative.

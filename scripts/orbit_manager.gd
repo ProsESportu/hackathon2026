@@ -13,10 +13,14 @@ extends Node
 signal orbit_entered
 signal orbit_exit_warning
 signal orbit_exited
+signal proximity_alert_started
+signal proximity_alert_cleared
 
 const ORBIT_ENTER_RADIUS: float = 0.80
 const ORBIT_EXIT_RADIUS:  float = 0.95
 const ORBIT_WARN_RADIUS:  float = 0.88
+const PROXIMITY_WARN_RADIUS:  float = 0.61   # ~0.10 above Earth surface
+const PROXIMITY_CLEAR_RADIUS: float = 0.64   # hysteresis band (0.03 wide)
 
 const EARTH_PATH:       NodePath = ^"../Słońce/ziemia axis/Ziemia"
 const EARTH_FRAME_PATH: NodePath = ^"../EarthFrame"
@@ -26,6 +30,7 @@ enum State { IN_SPACE, IN_ORBIT }
 
 var state: State = State.IN_SPACE
 var warned_this_orbit: bool = false
+var _proximity_active: bool = false
 
 var earth: Node3D
 var earth_frame: Node3D
@@ -70,6 +75,12 @@ func _process(delta: float) -> void:
 			elif dist < ORBIT_WARN_RADIUS and warned_this_orbit:
 				# Dipped back in; allow warning to fire again next time.
 				warned_this_orbit = false
+			if dist < PROXIMITY_WARN_RADIUS and not _proximity_active:
+				_proximity_active = true
+				proximity_alert_started.emit()
+			elif dist > PROXIMITY_CLEAR_RADIUS and _proximity_active:
+				_proximity_active = false
+				proximity_alert_cleared.emit()
 
 
 func _enter_orbit() -> void:
@@ -85,6 +96,9 @@ func _enter_orbit() -> void:
 func _exit_orbit() -> void:
 	state = State.IN_SPACE
 	warned_this_orbit = false
+	if _proximity_active:
+		_proximity_active = false
+		proximity_alert_cleared.emit()
 	player.reparent(original_player_parent, true)
 	if player.has_method("on_orbit_exited"):
 		player.on_orbit_exited(earth_velocity_world)
