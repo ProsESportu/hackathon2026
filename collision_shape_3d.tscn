@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://rf1v4ikjatxb"]
 
+[ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
+
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.8604651, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0.1295681, 0.1295681, 0.1295681, 1, 1, 1, 1, 1)
@@ -27,24 +29,6 @@ tonemap_mode = 2
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e68kw"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_e68kw"]
-
-[sub_resource type="Gradient" id="Gradient_e68kw"]
-colors = PackedColorArray(0, 0, 0, 1, 1, 1, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lixys"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e68kw"]
-noise = SubResource("FastNoiseLite_lixys")
-color_ramp = SubResource("Gradient_e68kw")
-seamless = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e68kw"]
-albedo_color = Color(1, 1, 0, 1)
-emission_enabled = true
-emission_texture = SubResource("NoiseTexture2D_e68kw")
-
-[sub_resource type="SphereMesh" id="SphereMesh_lixys"]
-material = SubResource("StandardMaterial3D_e68kw")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lixys"]
 
@@ -102,11 +86,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.1733923)
 [node name="Słońce" type="StaticBody3D" parent="." unique_id=527136251]
 physics_material_override = SubResource("PhysicsMaterial_e68kw")
 
+[node name="Sun Mesh Gen" type="Node3D" parent="Słońce" unique_id=1113421791]
+script = ExtResource("1_a87sn")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce" unique_id=150599732]
 shape = SubResource("SphereShape3D_e68kw")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce" unique_id=987745747]
-mesh = SubResource("SphereMesh_lixys")
 
 [node name="ziemia axis" type="Node3D" parent="Słońce" unique_id=429460865]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
