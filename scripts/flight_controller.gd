@@ -28,7 +28,7 @@ var in_orbit: bool = false
 
 func _ready() -> void:
 	#connect game over button to function
-	game_over_screen.get_child(0).connect("pressed",_on_button_pressed)
+	%"Game again btn".connect("pressed",_on_button_pressed)
 	# Only nudge to a default orbit if the scene placed us at origin.
 	if global_position.length() < 0.001:
 		global_position = Vector3(0.0, 0.0, START_ALT_SCENE)
