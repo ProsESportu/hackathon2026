@@ -15,7 +15,7 @@ const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
 const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
-@onready var game_over_screen: Control = $"../GameOverScreen"
+@onready var game_over_screen: Control = %GameOverScreen
 
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
@@ -118,9 +118,13 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		return
 	velocity = Vector3.ZERO
 	game_over_screen.visible = true
+	velocity=Vector3.ZERO
+	game_over_screen.visible=true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 
 func _on_button_pressed() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	get_tree().reload_current_scene()
 
 func _enforce_earth_floor() -> void:

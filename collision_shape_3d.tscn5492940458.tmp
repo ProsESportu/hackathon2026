@@ -3,8 +3,6 @@
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
 [ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
-[ext_resource type="Script" uid="uid://de2jbx0ufb1yx" path="res://scripts/orbit_manager.gd" id="3_orbitm"]
-[ext_resource type="PackedScene" uid="uid://cncgk3yqaatvs" path="res://scenes/HUD.tscn" id="4_hud"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -117,15 +115,6 @@ default_font_size = 100
 
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
-[node name="PlayerSat" parent="." unique_id=873958782 instance=ExtResource("1_pv212")]
-
-[node name="EarthFrame" type="Node3D" parent="." unique_id=1771122001]
-
-[node name="OrbitManager" type="Node" parent="." unique_id=1771122002]
-script = ExtResource("3_orbitm")
-
-[node name="HUD" parent="." unique_id=1771122003 instance=ExtResource("4_hud")]
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=856181904]
 environment = SubResource("Environment_a87sn")
 
@@ -150,6 +139,8 @@ shape = SubResource("SphereShape3D_lixys")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/ziemia axis/Ziemia" unique_id=938367271]
 mesh = SubResource("SphereMesh_pv212")
 
+[node name="PlayerSat" parent="Słońce/ziemia axis" unique_id=873958782 instance=ExtResource("1_pv212")]
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Słońce" unique_id=938859443]
 libraries/ = SubResource("AnimationLibrary_pv212")
 autoplay = &"orbit ziemia"
@@ -162,11 +153,7 @@ speed_scale = 0.1
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
 
-[node name="PlayerSat" parent="Słońce" unique_id=873958782 instance=ExtResource("1_pv212")]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
-
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
-unique_name_in_owner = true
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -194,4 +181,4 @@ theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
 
-[connection signal="pressed" from="GameOverScreen/Button" to="Słońce/PlayerSat" method="_on_button_pressed"]
+[connection signal="pressed" from="GameOverScreen/Button" to="Słońce/ziemia axis/PlayerSat" method="_on_button_pressed"]
