@@ -83,8 +83,6 @@ const FALLBACK_DATA: Dictionary = {
 	40376: {"country": "US", "launch": "2015-01-31", "type": "PAYLOAD", "period": 98.5, "inclination": 98.1},
 }
 
-
->>>>>>> 5b52dd0573222d02a6b4246d2e7fb93748cd3c36
 func _ready() -> void:
 	# 1. Bezpieczne przypisanie Słońca
 	sun = get_node_or_null(SUN_PATH)
