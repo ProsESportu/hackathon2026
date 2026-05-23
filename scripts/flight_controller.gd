@@ -5,7 +5,7 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 0.15
+const THRUST_ACCEL: float = 1
 const MAX_SPEED: float = 5              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
