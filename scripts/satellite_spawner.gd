@@ -130,6 +130,11 @@ func _spawn_satellites() -> void:
 		var target_id = NORAD_IDS[i]
 		sat.name = "Satellite_" + str(target_id)
 		sat.set_meta("norad_id", target_id)
+		
+		# Provide mock data immediately to avoid crashes on interaction before network response
+		sat.data = SatelliteData.new()
+		sat.data.norad_id = target_id
+		sat.data.name = "Loading..."
 
 		add_child(sat)
 		_satellites.append(sat)
@@ -270,6 +275,9 @@ func _update_proximity() -> void:
 
 func _on_interact_pressed() -> void:
 	if state != State.IN_ORBIT or _current_target == null:
+		return
+	if _current_target.data == null:
+		print("[SatelliteSpawner] Data not yet loaded for satellite.")
 		return
 	print("[SatelliteSpawner] minigame requested for ", _current_target.data.name)
 	minigame_requested.emit(_current_target, _current_target.data)
