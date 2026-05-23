@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 InputBridge="*res://scripts/input_bridge.gd"
 MinigameBroadcaster="*res://scripts/minigame_broadcaster.gd"
+SatelliteService="*res://scripts/satellite_service.gd"
 
 [editor]
 
@@ -27,6 +28,11 @@ version_control/autoload_on_startup=true
 
 [input]
 
+up={
+"deadzone": 0.2,
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":3,"axis_value":-1.0,"script":null)
+]
+}
 down={
 "deadzone": 0.2,
 "events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":3,"axis_value":1.0,"script":null)

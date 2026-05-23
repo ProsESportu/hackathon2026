@@ -5,6 +5,7 @@ extends Node3D
 @onready var wing_holder: MeshInstance3D = $"wing holder"
 
 var _sun: Node3D
+var data: SatelliteData = null
 
 
 func _ready() -> void:
