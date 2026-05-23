@@ -57,6 +57,11 @@ l_trigger={
 ]
 }
 
+[input_devices]
+
+sensors/enable_accelerometer=true
+sensors/enable_gyroscope=true
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

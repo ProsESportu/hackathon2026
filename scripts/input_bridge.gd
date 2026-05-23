@@ -16,6 +16,7 @@ var lift: float = 0.0    # +1 = up        (Shift/Ctrl)
 var brake: bool = false  # Space — actively damps linear velocity to a halt
 var focus: float = 1.0   # 0..1 — EEG attention; multiplies scan speed, low focus adds reticle jitter
 
+
 # ---- mouse-look (radians, accumulated per frame, consumed by flight controller) ----
 var _look_dx: float = 0.0  # yaw delta (positive = look right)
 var _look_dy: float = 0.0  # pitch delta (positive = look up)
@@ -25,6 +26,7 @@ var _look_dy: float = 0.0  # pitch delta (positive = look up)
 @export var gamepad_look_speed: float = 2.5    # rad/sec at full right-stick deflection
 @export var invert_gamepad_y: bool = false
 @export var trigger_brake_threshold: float = 0.1
+
 
 func _ready() -> void:
 	# Capture mouse on startup so flight feels right immediately.

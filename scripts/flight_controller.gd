@@ -5,7 +5,7 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 1
+const THRUST_ACCEL: float = 0.1
 const MAX_SPEED: float = 5              # ~16 km/s in scene units
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
@@ -75,12 +75,36 @@ func _apply_thrust(delta: float) -> void:
 		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
 
 func _integrate_position(delta: float) -> void:
-	global_position += velocity * delta
+	# Local-space integration: when reparented under EarthFrame the player
+	# automatically drifts with Earth, and `velocity` is interpreted in the
+	# parent's frame. Under the scene root (identity transform) this is
+	# equivalent to integrating global_position.
+	position += velocity * delta
+
+func on_orbit_entered(earth_world_velocity: Vector3) -> void:
+	# Was world-relative, now Earth-frame-relative.
+	velocity -= earth_world_velocity
+
+func on_orbit_exited(earth_world_velocity: Vector3) -> void:
+	# Convert Earth-frame velocity back to world-relative.
+	velocity += earth_world_velocity
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	velocity=Vector3.ZERO
-	game_over_screen.visible=true
+	# Phantom signals can fire when the player reparents into/out of EarthFrame
+	# (Area3D re-registers in the physics server and re-emits body_entered for
+	# anything in range). Only count it as a crash if we're geometrically inside
+	# the body's ~0.5-radius collision sphere.
+	if body == null:
+		return
+	var d: float = global_position.distance_to(body.global_position)
+	var parent_name: String = get_parent().name if get_parent() != null else "<none>"
+	print("[FlightController] body_entered: ", body.name, " dist=", "%.3f" % d, " parent=", parent_name)
+	if d > 0.55:
+		print("[FlightController]   -> ignored (outside surface threshold)")
+		return
+	velocity = Vector3.ZERO
+	game_over_screen.visible = true
 
 
 func _on_button_pressed() -> void:
