@@ -43,6 +43,7 @@ var _modal_country: Label
 var _modal_launch: Label
 var _modal_type: Label
 var _modal_orbit: Label
+var _modal_reward: Label
 
 
 func _ready() -> void:
@@ -60,6 +61,8 @@ func _ready() -> void:
 	_satellite_spawner.satellite_in_range.connect(_on_satellite_in_range)
 	_satellite_spawner.satellite_out_of_range.connect(_on_satellite_out_of_range)
 	_satellite_spawner.minigame_requested.connect(_on_minigame_requested)
+
+	MinigameBroadcaster.minigame_completed.connect(_on_minigame_completed)
 
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
@@ -132,6 +135,15 @@ func _on_satellite_out_of_range() -> void:
 
 func _on_minigame_requested(_sat: Node3D, data: SatelliteData) -> void:
 	_show_satellite_modal(data)
+	_modal_reward.text = "Waiting for minigame result..."
+	# Send minigame to PI
+	var random_id = MinigameBroadcaster.get_random_minigame_id()
+	MinigameBroadcaster.send_minigame(random_id)
+
+
+func _on_minigame_completed(reward: String) -> void:
+	if _modal_active:
+		_modal_reward.text = "Reward: %s" % reward
 
 
 # --- Orbit-entry cinematic ----------------------------------------------------
@@ -229,6 +241,13 @@ func _setup_satellite_modal() -> void:
 	_modal_launch  = _modal_label("", 18, vbox)
 	_modal_type    = _modal_label("", 18, vbox)
 	_modal_orbit   = _modal_label("", 18, vbox)
+
+	var reward_spacer := Control.new()
+	reward_spacer.custom_minimum_size = Vector2(0, 16)
+	vbox.add_child(reward_spacer)
+	
+	_modal_reward  = _modal_label("", 22, vbox)
+	_modal_reward.modulate = Color(1.0, 0.84, 0.0) # Gold color
 
 	# Fill the remaining space
 	var spacer := Control.new()
