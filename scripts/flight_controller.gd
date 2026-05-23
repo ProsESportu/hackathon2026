@@ -5,8 +5,10 @@ extends Node3D
 
 const ROT_ACCEL: float = 2.8
 const ROT_DAMP_PER_SEC: float = 0.04        # fraction of angular velocity retained per second
-const THRUST_ACCEL: float = 0.15
+const THRUST_ACCEL: float = 0.1
 const MAX_SPEED: float = 5              # ~16 km/s in scene units
+const IN_ORBIT_THRUST_ACCEL: float = 0.01   # gentler push while inside Earth's orbital bubble
+const IN_ORBIT_MAX_SPEED: float = 0.4       # so the player can't blitz through orbit and crash
 const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
@@ -18,6 +20,7 @@ const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at
 # Tracked state
 var ang_vel: Vector3 = Vector3.ZERO
 var velocity: Vector3 = Vector3.ZERO
+var in_orbit: bool = false
 
 @onready var earth: Node3D = get_node_or_null("../Słońce/ziemia axis/Ziemia")
 
@@ -62,23 +65,59 @@ func _apply_thrust(delta: float) -> void:
 	var right: Vector3 = basis.x
 	var up: Vector3 = basis.y
 
+	var thrust_accel: float = IN_ORBIT_THRUST_ACCEL if in_orbit else THRUST_ACCEL
+	var max_speed: float = IN_ORBIT_MAX_SPEED if in_orbit else MAX_SPEED
+
 	var accel_dir: Vector3 = fwd * InputBridge.thrust + right * InputBridge.strafe + up * InputBridge.lift
 	# Match the prototype's per-frame-at-60Hz feel: a = THRUST_ACCEL * 60 per second.
-	velocity += accel_dir * (THRUST_ACCEL * FRAME_REF_HZ) * delta
+	velocity += accel_dir * (thrust_accel * FRAME_REF_HZ) * delta
 
 	var sp: float = velocity.length()
-	if sp > MAX_SPEED:
-		velocity *= MAX_SPEED / sp
+	if sp > max_speed:
+		velocity *= max_speed / sp
 	velocity *= pow(VEL_DAMP_PER_SEC, delta)
 
 	if InputBridge.brake:
 		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
 
 func _integrate_position(delta: float) -> void:
-	global_position += velocity * delta
+	# Local-space integration: when reparented under EarthFrame the player
+	# automatically drifts with Earth, and `velocity` is interpreted in the
+	# parent's frame. Under the scene root (identity transform) this is
+	# equivalent to integrating global_position.
+	position += velocity * delta
+
+func on_orbit_entered(earth_world_velocity: Vector3) -> void:
+	# Was world-relative, now Earth-frame-relative.
+	velocity -= earth_world_velocity
+	in_orbit = true
+	# Clamp inherited momentum to the orbital cap so the player can't punch
+	# straight through Earth at the moment of entry.
+	var sp: float = velocity.length()
+	if sp > IN_ORBIT_MAX_SPEED:
+		velocity *= IN_ORBIT_MAX_SPEED / sp
+
+func on_orbit_exited(earth_world_velocity: Vector3) -> void:
+	# Convert Earth-frame velocity back to world-relative.
+	velocity += earth_world_velocity
+	in_orbit = false
 
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
+	# Phantom signals can fire when the player reparents into/out of EarthFrame
+	# (Area3D re-registers in the physics server and re-emits body_entered for
+	# anything in range). Only count it as a crash if we're geometrically inside
+	# the body's ~0.5-radius collision sphere.
+	if body == null:
+		return
+	var d: float = global_position.distance_to(body.global_position)
+	var parent_name: String = get_parent().name if get_parent() != null else "<none>"
+	print("[FlightController] body_entered: ", body.name, " dist=", "%.3f" % d, " parent=", parent_name)
+	if d > 0.55:
+		print("[FlightController]   -> ignored (outside surface threshold)")
+		return
+	velocity = Vector3.ZERO
+	game_over_screen.visible = true
 	velocity=Vector3.ZERO
 	game_over_screen.visible=true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
