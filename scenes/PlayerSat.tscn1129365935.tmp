@@ -16,7 +16,6 @@ far = 100.0
 [node name="Area3D" type="Area3D" parent="Camera" unique_id=159510815]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/Area3D" unique_id=526861454]
-transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_5xqsn")
 
 [connection signal="body_entered" from="Camera/Area3D" to="." method="_on_area_3d_body_entered"]

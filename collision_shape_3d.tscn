@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://rf1v4ikjatxb"]
 
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
-[ext_resource type="PackedScene" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
+[ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
@@ -108,6 +108,11 @@ _data = {
 &"orbit ziemia": SubResource("Animation_a87sn")
 }
 
+[sub_resource type="Theme" id="Theme_pv212"]
+default_font_size = 100
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_xdl8v"]
+
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
 [node name="PlayerSat" parent="." unique_id=873958782 instance=ExtResource("1_pv212")]
@@ -147,3 +152,33 @@ autoplay = &"obrót ziemia"
 speed_scale = 0.1
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
+
+[node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Button" type="Button" parent="GameOverScreen" unique_id=1923427968]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -49.5
+offset_top = -15.5
+offset_right = 49.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_pv212")
+text = "Game Over"
+icon = SubResource("ViewportTexture_xdl8v")
+
+[connection signal="pressed" from="GameOverScreen/Button" to="PlayerSat" method="_on_button_pressed"]
