@@ -177,9 +177,6 @@ speed_scale = 0.1
 light_energy = 16.0
 omni_range = 4096.0
 
-[node name="PlayerSat" parent="Słońce" unique_id=1879908710 instance=ExtResource("1_pv212")]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
-
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
 unique_name_in_owner = true
 visible = false
@@ -208,5 +205,3 @@ grow_vertical = 2
 theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
-
-[connection signal="pressed" from="GameOverScreen/Button" to="Słońce/PlayerSat" method="_on_button_pressed"]
