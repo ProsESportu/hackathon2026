@@ -66,7 +66,7 @@ func _physics_process(delta: float) -> void:
 	server.poll()
 	brake = Input.is_physical_key_pressed(KEY_SPACE)
 	roll = _axis(KEY_E, KEY_Q)        # E = roll right (+), Q = roll left (-)
-	var key_thrust := _axis(KEY_W, KEY_S)
+	thrust = _axis(KEY_W, KEY_S)
 	strafe = _axis(KEY_D, KEY_A)
 	lift = _axis(KEY_SHIFT, KEY_CTRL)
 	

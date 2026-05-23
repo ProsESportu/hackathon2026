@@ -116,8 +116,6 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if d > 0.55:
 		print("[FlightController]   -> ignored (outside surface threshold)")
 		return
-	velocity = Vector3.ZERO
-	game_over_screen.visible = true
 	velocity=Vector3.ZERO
 	game_over_screen.visible=true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -125,6 +123,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 
 func _on_button_pressed() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	print("reswtart")
 	get_tree().reload_current_scene()
 
 func _enforce_earth_floor() -> void:
