@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dileodbch8j1l" path="res://sun_mesh_gen.gd" id="1_a87sn"]
 [ext_resource type="PackedScene" uid="uid://odfxmsbcwan0" path="res://scenes/PlayerSat.tscn" id="1_pv212"]
 [ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_a87sn"]
+[ext_resource type="PackedScene" uid="uid://dqirfgoksajo1" path="res://scenes/satelite.tscn" id="4_xdl8v"]
 
 [sub_resource type="Gradient" id="Gradient_lixys"]
 offsets = PackedFloat32Array(0, 0.5215947, 0.8006644, 0.820598, 0.8604651, 1)
@@ -153,6 +154,7 @@ speed_scale = 0.1
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Słońce" unique_id=1460836351]
 
+<<<<<<< Updated upstream
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
 visible = false
 layout_mode = 3
@@ -182,3 +184,10 @@ text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
 
 [connection signal="pressed" from="GameOverScreen/Button" to="PlayerSat" method="_on_button_pressed"]
+=======
+[node name="satelite" parent="." unique_id=1762155981 instance=ExtResource("4_xdl8v")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 3.6287832, 0, -1.9565799)
+sun_node = NodePath("../Słońce")
+
+[editable path="satelite"]
+>>>>>>> Stashed changes
