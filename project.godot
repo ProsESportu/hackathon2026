@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 InputBridge="*res://scripts/input_bridge.gd"
+MinigameBroadcaster="*res://scripts/minigame_broadcaster.gd"
 
 [editor]
 
