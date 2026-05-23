@@ -44,8 +44,8 @@ const NORAD_IDS: Array[int] = [
 	27424, # Aqua
 	40059, # OCO-2
 	39086, # Landsat 8
-	47954, # Radiometer Sat
-	44387, # LightSail 2
+	40390, # DSCOVR
+	41866, # GOES-16
 	43013, # NOAA 20
 	40376  # SMAP
 ]
@@ -59,8 +59,8 @@ const NORAD_NAMES: Dictionary = {
 	27424: "Aqua",
 	40059: "OCO-2",
 	39086: "Landsat 8",
-	47954: "Radiometer Sat",
-	44387: "LightSail 2",
+	40390: "DSCOVR",
+	41866: "GOES-16",
 	43013: "NOAA 20",
 	40376: "SMAP",
 }
@@ -154,77 +154,18 @@ func _spawn_satellites() -> void:
 		add_child(sat)
 		_satellites.append(sat)
 		
-		# Odpalenie zapytania HTTP bezpośrednio z tego samego obiektu
-		fetch_satellite_data(target_id)
+		var service = get_node_or_null("/root/SatelliteService")
+		if service:
+			if not service.is_connected("satellite_fetched", _on_network_data_received):
+				service.satellite_fetched.connect(_on_network_data_received)
+			if not service.is_connected("satellite_fetch_failed", _on_network_data_failed):
+				service.satellite_fetch_failed.connect(_on_network_data_failed)
+			service.fetch_satellite_data(target_id)
+		else:
+			push_error("SatelliteService not found!")
 
 
-func fetch_satellite_data(norad_id: int) -> void:
-	var http_client = HTTPRequest.new()
-	add_child(http_client)
-	
-	http_client.request_completed.connect(
-		func(result, response_code, headers, body): 
-			_on_request_completed(result, response_code, headers, body, norad_id, http_client)
-	)
-
-	var custom_headers = [
-		"User-Agent: GodotSatelliteApp/1.0",
-		"Accept: application/json"
-	]
-	
-	http_client.use_threads = false
-	
-	var url = "https://celestrak.org/satcat/records.php?CATNR=%d&FORMAT=json" % norad_id
-
-	var error = http_client.request(url, custom_headers, HTTPClient.METHOD_GET)
-	if error != OK:
-		satellite_fetch_failed.emit(norad_id, "HTTP Initial Request Failed")
-		http_client.queue_free()
-
-
-
-func _on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, norad_id: int, client_node: Node) -> void:
-	client_node.queue_free()
-
-	if result != HTTPRequest.RESULT_SUCCESS:
-		satellite_fetch_failed.emit(norad_id, "TLE HTTP %d" % result)
-		return
-
-	if response_code != 200:
-		satellite_fetch_failed.emit(norad_id, "Server Rejected Code %d" % response_code)
-		return
-
-	var json = JSON.new()
-	var parse_err = json.parse(body.get_string_from_utf8())
-	if parse_err != OK:
-		satellite_fetch_failed.emit(norad_id, "JSON parsing error")
-		return
-
-	var response_data = json.get_data()
-	
-	# Celestrak SATCAT returns a JSON array, one object per satellite
-	if typeof(response_data) != TYPE_ARRAY or response_data.is_empty():
-		satellite_fetch_failed.emit(norad_id, "No valid JSON array returned")
-		return
-
-	var sat_json: Dictionary = response_data[0]
-	if sat_json == null:
-		satellite_fetch_failed.emit(norad_id, "Array element is not a dictionary")
-		return
-
-	var satellite_data = SatelliteData.new()
-	satellite_data.norad_id    = norad_id
-	satellite_data.name        = sat_json.get("SATNAME", "Unknown")
-	satellite_data.country     = sat_json.get("COUNTRY", "")
-	satellite_data.launch_date = sat_json.get("LAUNCH", "")
-	satellite_data.object_type = sat_json.get("OBJECT_TYPE", "")
-	satellite_data.period_min      = float(sat_json.get("PERIOD", 0))
-	satellite_data.inclination_deg = float(sat_json.get("INCLINATION", 0))
-	satellite_data.apogee_km   = float(sat_json.get("APOGEE", 0))
-	satellite_data.perigee_km  = float(sat_json.get("PERIGEE", 0))
-
-	satellite_fetched.emit(satellite_data)
-
+	# (Removed old local Celestrak functions)
 
 func _on_network_data_received(api_data: SatelliteData) -> void:
 	for sat in _satellites:
