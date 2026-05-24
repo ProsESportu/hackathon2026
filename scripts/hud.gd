@@ -44,6 +44,7 @@ var _uplink_label: Label = null
 const MINIGAME_SCENES: Array[PackedScene] = [
 	preload("res://connect_wires.tscn"),
 	preload("res://scenes/puzzle_minigame.tscn"),
+	preload("res://memory.tscn"),
 ]
 var _modal_root: ColorRect
 var _modal_photo: TextureRect

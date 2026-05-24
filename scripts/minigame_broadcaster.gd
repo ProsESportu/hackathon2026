@@ -3,7 +3,7 @@ extends Node
 const PI_IP: String = "192.168.0.128"
 const PI_PORT: int = 5001
 const RECEIVE_PORT: int = 5002
-const MINIGAME_COUNT: int = 2  # bump when new minigames are added
+const MINIGAME_COUNT: int = 3  # bump when new minigames are added
 
 var _peer: PacketPeerUDP
 var _server: UDPServer

@@ -1,4 +1,7 @@
 extends Control
+
+signal completed
+
 @onready var control: Control = $"."
 @onready var label: Label = $Label
 @onready var button_2: Button = $GridContainer/Button2
@@ -11,22 +14,28 @@ extends Control
 @onready var button_9: Button = $GridContainer/Button9
 @onready var button: Button = $GridContainer/Button
 
-# Called when the node enters the scene tree for the first time.
-var target:Array[int]=[]
+var target: Array[int] = []
+var _done := false
+
 func _ready() -> void:
+	InputBridge.disabled_input = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	for i in range(4):
-		var l=randi()%9 +1
+		var l = randi() % 9 + 1
 		if l not in target:
 			target.push_back(l)
+	await get_tree().create_timer(1.5).timeout
 	for i in target:
 		await get_tree().create_timer(1).timeout
-		label.text=str(i)
+		label.text = str(i)
+	label.text = "?"
 	target.sort()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	var buttons=[]
+func _process(_delta: float) -> void:
+	if _done:
+		return
+	var buttons: Array[int] = []
 	if button.button_pressed:
 		buttons.push_back(1)
 	if button_2.button_pressed:
@@ -46,6 +55,8 @@ func _process(delta: float) -> void:
 	if button_9.button_pressed:
 		buttons.push_back(9)
 	buttons.sort()
-	print(buttons,target)
-	if buttons==target:
-		label.text="win"
+	if buttons == target:
+		_done = true
+		label.text = "WIN!"
+		InputBridge.disabled_input = false
+		completed.emit()
