@@ -20,9 +20,6 @@ func _ready() -> void:
 		new_wire.get_child(0).global_position.y = possible_positions.pop_back() * 120 + 80
 		print(wire.global_position.y,wire.get_child(0).global_position.y)
 	wire.queue_free()
-	
-	
-		
 
 func _process(delta: float) -> void:
 	var all_connected = true
@@ -41,9 +38,4 @@ func _process(delta: float) -> void:
 		await tween.finished
 		InputBridge.disabled_input = false
 		completed.emit()
-			
-			
-			
-			
-			
 			

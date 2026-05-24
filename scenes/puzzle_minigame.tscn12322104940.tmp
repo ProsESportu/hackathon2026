@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cc5wb5dpqlgat"]
+
+[ext_resource type="Script" uid="uid://djtjs6mln4w4r" path="res://puzzle_minigame.gd" id="1_2xq2q"]
+[ext_resource type="Texture2D" uid="uid://bqhnpbe5qp2ec" path="res://earth_texture.jpg" id="2_60p86"]
+
+[node name="Puzzle minigame" type="Node2D" unique_id=1372097860]
+script = ExtResource("1_2xq2q")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=233111553]
+texture = ExtResource("2_60p86")
+polygon = PackedVector2Array(5, 5, 472, 15, 478, 240, 0, 235)
+
+[node name="Area2D" type="Area2D" parent="." unique_id=230612528]
