@@ -61,7 +61,8 @@ func _process(delta: float) -> void:
 	var payload: PackedByteArray = ("%f,%f" % [distance,disatnce_vector]).to_utf8_buffer()
 	var err := _peer.put_packet(payload)
 	if err == OK:
-		print("[distance] sent distamce %s to %s:%d" % [payload.get_string_from_utf8(), PI_IP, PI_PORT])
+		pass
+		#print("[distance] sent distamce %s to %s:%d" % [payload.get_string_from_utf8(), PI_IP, PI_PORT])
 	else:
 		push_error("[distance] failed to send dsitcance packet: %d" % err)
 	

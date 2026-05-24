@@ -95,10 +95,14 @@ func _physics_process(delta: float) -> void:
 			var res=packet.get_string_from_utf8()
 			print("Received data: %s" % [res])
 			res=res.split(",")
-			_look_dx=float(res[0])*0.0001
+			_look_dx=-float(res[0])*0.0001
 			_look_dy=float(res[1])*0.0001
 			thrust=float(res[2])
 			brake=bool(int(res[3]))
+	if abs(_look_dx)<0.001:
+		_look_dx=0
+	if abs(_look_dy)<0.001:
+		_look_dy=0
 
 static func _axis(positive: Key, negative: Key) -> float:
 	return float(Input.is_physical_key_pressed(positive)) - float(Input.is_physical_key_pressed(negative))
