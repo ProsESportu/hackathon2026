@@ -43,7 +43,7 @@ func _split_poly_half(poly:Polygon2D):
 func _move_to_random_positions():
 	var t := get_tree().create_tween()
 	for polygon2d in all_polygons:
-		t.tween_property(polygon2d,'position',Vector2(randi_range(0,300),randi_range(0,200)),0.2)
+		t.tween_property(polygon2d,'position',Vector2(randi_range(100,400),randi_range(50,200)),0.2)
 
 var select_lock = null
 func _add_areas_to_polygons():
@@ -88,6 +88,7 @@ func _check_absolute_sum():
 			t.tween_property(polygon2d,'position',all_polygons[0].position,0.05)
 			t.tween_property(polygon2d,'color',Color.WHITE,0.05)
 		await t.finished
+		InputBridge.disabled_input = false
 		completed.emit()
 		c=true
 	else:
