@@ -10,6 +10,7 @@
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
 [ext_resource type="Shader" uid="uid://bkd3ds7egm3lr" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
+[ext_resource type="Script" uid="uid://dh6i5nbuf60l7" path="res://scripts/ground_station.gd" id="11_gs"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
 panorama = ExtResource("5_rqkj4")
@@ -242,5 +243,8 @@ grow_vertical = 2
 theme = SubResource("Theme_pv212")
 text = "Game Over"
 icon = SubResource("ViewportTexture_xdl8v")
+
+[node name="GroundStation" type="Node" parent="." unique_id=1771122099]
+script = ExtResource("11_gs")
 
 [connection signal="pressed" from="GameOverScreen/Game again btn" to="PlayerSat" method="_on_button_pressed"]
