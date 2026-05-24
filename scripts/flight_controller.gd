@@ -112,6 +112,7 @@ func _apply_thrust(delta: float) -> void:
 
 	if InputBridge.brake:
 		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
+		ang_vel *= pow(BRAKE_DAMP_PER_SEC, delta)
 
 func _integrate_position(delta: float) -> void:
 	if movement_locked:
