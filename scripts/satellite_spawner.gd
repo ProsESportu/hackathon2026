@@ -19,18 +19,19 @@ const ORBIT_MANAGER_PATH: NodePath = ^"../../OrbitManager"
 
 const SATELLITE_SCENE: PackedScene = preload("res://scenes/satelite.tscn")
 
-const SAT_COUNT: int = 1
-const SAT_ORBIT_RADIUS: float = 0.76   # between PROXIMITY_WARN (0.61) and ORBIT_ENTER (0.80)
+const SAT_COUNT: int = 5
+const SAT_ORBIT_RADIUS: float = 1.0    # half of ORBIT_ENTER_RADIUS (2.0)
 const REVOLUTION_RAD_PER_SEC: float = 0.05
 
-const INTERACT_ENTER_RADIUS: float = 0.08
-const INTERACT_EXIT_RADIUS:  float = 0.11  # hysteresis band
+const INTERACT_ENTER_RADIUS: float = 0.16  # 2× old value — auto-triggers minigame
+const INTERACT_EXIT_RADIUS:  float = 0.22  # hysteresis band
 
 enum State { IN_SPACE, IN_ORBIT }
 
 var state: State = State.IN_SPACE
 var _satellites: Array[Node3D] = []
 var _current_target: Node3D = null
+var _minigame_active: bool = false
 
 var sun: Node3D
 var player: Node3D
@@ -102,7 +103,8 @@ func _ready() -> void:
 
 	InputBridge.interact_pressed.connect(_on_interact_pressed)
 
-	_spawn_satellite()
+	for i in SAT_COUNT:
+		_spawn_satellite()
 
 
 
@@ -119,12 +121,20 @@ func _process(delta: float) -> void:
 # --- Spawning & API Fetching -------------------------------------------------
 
 func _spawn_satellite(exclude_id: int = -1) -> void:
+	var active_ids: Array[int] = []
+	for sat in _satellites:
+		if sat.has_meta("norad_id"):
+			active_ids.append(sat.get_meta("norad_id"))
+	if exclude_id != -1 and not active_ids.has(exclude_id):
+		active_ids.append(exclude_id)
+
 	var cat_data: Dictionary
-	if exclude_id == -1:
+	var attempts := 0
+	cat_data = SatelliteCatalog.get_random()
+	while active_ids.has(cat_data.get("norad_id", -1)) and attempts < 20:
 		cat_data = SatelliteCatalog.get_random()
-	else:
-		cat_data = SatelliteCatalog.get_random_excluding(exclude_id)
-		
+		attempts += 1
+
 	var target_id: int = cat_data["norad_id"]
 
 	var sat: Node3D = SATELLITE_SCENE.instantiate()
@@ -213,6 +223,8 @@ func _on_orbit_exited() -> void:
 # --- Proximity ---------------------------------------------------------------
 
 func _update_proximity() -> void:
+	if _minigame_active:
+		return
 	var player_pos: Vector3 = player.global_position
 	var nearest: Node3D = null
 	var nearest_dist: float = INF
@@ -226,6 +238,9 @@ func _update_proximity() -> void:
 		if nearest_dist < INTERACT_ENTER_RADIUS:
 			_current_target = nearest
 			satellite_in_range.emit(nearest)
+			if nearest != null and nearest.data != null:
+				_minigame_active = true
+				minigame_requested.emit(nearest, nearest.data)
 	else:
 		var target_dist: float = player_pos.distance_to(_current_target.global_position)
 		if target_dist > INTERACT_EXIT_RADIUS:
@@ -234,6 +249,9 @@ func _update_proximity() -> void:
 			if nearest != null and nearest_dist < INTERACT_ENTER_RADIUS:
 				_current_target = nearest
 				satellite_in_range.emit(nearest)
+				if nearest.data != null:
+					_minigame_active = true
+					minigame_requested.emit(nearest, nearest.data)
 
 
 # --- Interaction -------------------------------------------------------------
@@ -249,6 +267,7 @@ func _on_interact_pressed() -> void:
 
 
 func consume_current() -> void:
+	_minigame_active = false
 	if _current_target == null:
 		return
 	var old_id: int = _current_target.get_meta("norad_id", -1)
