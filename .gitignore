@@ -4,3 +4,4 @@
 CLAUDE.md
 orbital-hunter.html
 *.md
+!README.md
