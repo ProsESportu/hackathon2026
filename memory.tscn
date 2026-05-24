@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://kyb8v4ss1vrk"]
+
+[ext_resource type="Script" uid="uid://cw273gofcx50p" path="res://memory.gd" id="1_kh0cx"]
+
+[sub_resource type="Theme" id="Theme_kh0cx"]
+default_font_size = 50
+
+[node name="Control" type="Control" unique_id=999032918]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 2.0
+offset_right = 5.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_kh0cx")
+script = ExtResource("1_kh0cx")
+
+[node name="Label" type="Label" parent="." unique_id=960798680]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -0.5
+offset_right = 0.5
+offset_bottom = 69.0
+grow_horizontal = 2
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=537409547]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.5
+offset_top = -119.5
+offset_right = 59.5
+offset_bottom = 119.5
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="Button" type="Button" parent="GridContainer" unique_id=1282979120]
+layout_mode = 2
+toggle_mode = true
+text = "1"
+
+[node name="Button2" type="Button" parent="GridContainer" unique_id=331715526]
+layout_mode = 2
+toggle_mode = true
+text = "2"
+
+[node name="Button3" type="Button" parent="GridContainer" unique_id=1809270037]
+layout_mode = 2
+toggle_mode = true
+text = "3"
+
+[node name="Button4" type="Button" parent="GridContainer" unique_id=1916183844]
+layout_mode = 2
+toggle_mode = true
+text = "4"
+
+[node name="Button5" type="Button" parent="GridContainer" unique_id=1742505465]
+layout_mode = 2
+toggle_mode = true
+text = "5"
+
+[node name="Button6" type="Button" parent="GridContainer" unique_id=1510134585]
+layout_mode = 2
+toggle_mode = true
+text = "6"
+
+[node name="Button7" type="Button" parent="GridContainer" unique_id=625972914]
+layout_mode = 2
+toggle_mode = true
+text = "7"
+
+[node name="Button8" type="Button" parent="GridContainer" unique_id=1728846623]
+layout_mode = 2
+toggle_mode = true
+text = "8"
+
+[node name="Button9" type="Button" parent="GridContainer" unique_id=2119939987]
+layout_mode = 2
+toggle_mode = true
+text = "9"
