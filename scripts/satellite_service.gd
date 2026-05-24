@@ -4,6 +4,13 @@ extends Node
 signal satellite_fetched(data: SatelliteData)
 signal satellite_fetch_failed(norad_id: int, reason: String)
 
+const FALLBACK_IMAGES: Array[String] = [
+	"res://obraz1.jpg",
+	"res://obraz2.jpg",
+	"res://obraz3.jpg",
+	"res://obraz4.jpg",
+]
+
 var _auth_cookie: String = ""
 var _is_authenticating: bool = false
 var _queued_requests: Array[int] = []
@@ -202,7 +209,11 @@ func _on_wikipedia_metadata_completed(result: int, response_code: int, _headers:
 						_download_image(sat_data)
 						return
 
-	# No image found or error, just emit what we have
+	# No image found or error — use a random fallback
+	var path: String = FALLBACK_IMAGES[randi() % FALLBACK_IMAGES.size()]
+	var fallback := Image.new()
+	if fallback.load(path) == OK:
+		sat_data.photo_image = fallback
 	satellite_fetched.emit(sat_data)
 
 func _download_image(sat_data: SatelliteData) -> void:
@@ -233,6 +244,12 @@ func _on_image_download_completed(result: int, response_code: int, _headers: Pac
 
 		if err == OK:
 			sat_data.photo_image = image
+
+	if sat_data.photo_image == null:
+		var path: String = FALLBACK_IMAGES[randi() % FALLBACK_IMAGES.size()]
+		var fallback := Image.new()
+		if fallback.load(path) == OK:
+			sat_data.photo_image = fallback
 
 	satellite_fetched.emit(sat_data)
 

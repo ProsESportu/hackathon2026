@@ -2,7 +2,7 @@ extends Node
 
 signal description_ready(norad_id: int, description: String)
 
-const API_KEY: String = "AIzaSyBiDOTjhJn6M8Szt4X7ojwU9dnbOM0Z5tw"
+const API_URL: String = "http://192.168.0.99:8080/v1/completions"
 
 const PROMPT_TEMPLATE: String = (
 	"Wygeneruj krótki, encyklopedyczny opis satelity o nazwie {name} (NORAD ID: {norad_id}). " +
@@ -16,8 +16,6 @@ const PROMPT_TEMPLATE: String = (
 	"\n6. Pisz w języku polskim, zachowaj zwięzły i profesjonalny ton. Nie dodawaj żadnego wstępu ani podsumowania."
 )
 
-const API_URL: String = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key="
-
 # Zmienna blokująca wielokrotne wywołania
 var _is_fetching: bool = false
 
@@ -27,10 +25,6 @@ func fetch_description(sat_data: SatelliteData) -> void:
 		push_warning("[GeminiService] Zapytanie w toku. Ignoruję próbę pobrania dla NORAD: %d" % sat_data.norad_id)
 		return
 		
-	if API_KEY == "AIzaSyBiDOTjhJn6M8Szt4X7ojwU9dnbOM0Z5twa":
-		push_warning("[GeminiService] API key not set — skipping description fetch.")
-		return
-
 	# 2. Założenie blokady
 	_is_fetching = true
 	print("[GeminiService] Rozpoczynam pobieranie dla NORAD: %d" % sat_data.norad_id)
@@ -47,13 +41,14 @@ func fetch_description(sat_data: SatelliteData) -> void:
 	var http: HTTPRequest = HTTPRequest.new()
 	add_child(http)
 	http.request_completed.connect(_on_response.bind(sat_data.norad_id, http))
-
-	var body: String = JSON.stringify({
-		"contents": [{"parts": [{"text": prompt}]}]
-	})
 	
-	http.request(API_URL + API_KEY, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
-
+	var body: String = JSON.stringify({
+		"prompt": prompt,
+		"max_tokens" : 200,
+	})
+	print(body)
+	http.request(API_URL, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+	print(API_URL)
 
 func _on_response(result: int, response_code: int, _headers: PackedStringArray,
 		body: PackedByteArray, norad_id: int, http: HTTPRequest) -> void:
@@ -75,17 +70,12 @@ func _on_response(result: int, response_code: int, _headers: PackedStringArray,
 		return
 
 	var data = json.get_data()
-	var candidates = data.get("candidates", [])
-	if candidates.is_empty():
+	var choices = data.get("choices", [])
+	if choices.is_empty():
 		description_ready.emit(norad_id, "AI nie zwróciło żadnych wyników.")
 		return
 
-	var parts = candidates[0].get("content", {}).get("parts", [])
-	if parts.is_empty():
-		description_ready.emit(norad_id, "AI zwróciło pustą treść.")
-		return
-
-	var text: String = parts[0].get("text", "").strip_edges()
+	var text: String = choices[0].get("text").strip_edges()
 	if not text.is_empty():
 		description_ready.emit(norad_id, text)
 	else:
