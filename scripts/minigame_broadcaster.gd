@@ -36,6 +36,14 @@ func send_minigame(id: int) -> void:
 
 func get_random_minigame_id() -> int:
 	return randi_range(1, MINIGAME_COUNT)
+
+func send_satellite_id(norad_id: int) -> void:
+	var payload: PackedByteArray = ("sat:%d" % norad_id).to_utf8_buffer()
+	var err := _peer.put_packet(payload)
+	if err == OK:
+		print("[MinigameBroadcaster] sent satellite id=%d to %s:%d" % [norad_id, PI_IP, PI_PORT])
+	else:
+		push_error("[MinigameBroadcaster] failed to send satellite id: %d" % err)
 func send_distance(dist:float)->void:
 	var payload: PackedByteArray = ("%d" % dist).to_utf8_buffer()
 	
