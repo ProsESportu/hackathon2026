@@ -10,6 +10,7 @@
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
 [ext_resource type="Shader" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
+[ext_resource type="Texture2D" uid="uid://df6mva3kjfkwr" path="res://8k_earth_normal_map.png" id="10_3lk8n"]
 [ext_resource type="Texture2D" uid="uid://c4ydk1kxmufb5" path="res://2k_neptune.jpg" id="10_uh4n1"]
 [ext_resource type="Texture2D" uid="uid://djr6yxipw5mqo" path="res://2k_mercury.jpg" id="11_6hno3"]
 [ext_resource type="Script" path="res://scripts/ground_station.gd" id="11_gs"]
@@ -51,6 +52,9 @@ shader_parameter/shadow_mask2d = ExtResource("8_huu8u")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a87sn"]
 next_pass = SubResource("ShaderMaterial_jlw0d")
 albedo_texture = ExtResource("6_fqmc4")
+normal_enabled = true
+normal_scale = 16.0
+normal_texture = ExtResource("10_3lk8n")
 
 [sub_resource type="SphereMesh" id="SphereMesh_pv212"]
 lightmap_size_hint = Vector2i(17, 9)
