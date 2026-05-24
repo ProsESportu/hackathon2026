@@ -10,9 +10,17 @@
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
 [ext_resource type="Shader" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
+[ext_resource type="Texture2D" uid="uid://c4ydk1kxmufb5" path="res://2k_neptune.jpg" id="10_uh4n1"]
+[ext_resource type="Texture2D" uid="uid://djr6yxipw5mqo" path="res://2k_mercury.jpg" id="11_6hno3"]
 [ext_resource type="Script" path="res://scripts/ground_station.gd" id="11_gs"]
+[ext_resource type="Texture2D" uid="uid://c0di2w8vv6o51" path="res://2k_mars.jpg" id="12_7d1dr"]
 [ext_resource type="Script" uid="uid://d4khmatd420j7" path="res://asteroid_spawner.gd" id="12_metu4"]
+[ext_resource type="Texture2D" uid="uid://bsp7c1ybhtej4" path="res://2k_jupiter.jpg" id="13_7d1dr"]
 [ext_resource type="Texture2D" uid="uid://3gkdpw32xiff" path="res://asteroid.jpg" id="13_vg7w2"]
+[ext_resource type="Texture2D" uid="uid://cphhi3slwck5t" path="res://2k_venus_atmosphere.jpg" id="13_vjecv"]
+[ext_resource type="Texture2D" uid="uid://chng102rqablb" path="res://2k_saturn_ring_alpha - rotated.png" id="15_h3v2a"]
+[ext_resource type="Texture2D" uid="uid://d23ty773phpk" path="res://2k_uranus.jpg" id="15_vjecv"]
+[ext_resource type="Texture2D" uid="uid://by7pfgpvydqs" path="res://2k_saturn.jpg" id="16_h3v2a"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
 panorama = ExtResource("5_rqkj4")
@@ -47,8 +55,6 @@ albedo_texture = ExtResource("6_fqmc4")
 [sub_resource type="SphereMesh" id="SphereMesh_pv212"]
 lightmap_size_hint = Vector2i(17, 9)
 material = SubResource("StandardMaterial3D_a87sn")
-radius = 0.55
-height = 1.1
 
 [sub_resource type="Animation" id="Animation_lixys"]
 length = 365.0
@@ -117,6 +123,91 @@ _data = {
 &"obrót ziemia": SubResource("Animation_pv212"),
 &"orbit ziemia": SubResource("Animation_a87sn")
 }
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_h3v2a"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8read"]
+albedo_texture = ExtResource("11_6hno3")
+roughness_texture = ExtResource("11_6hno3")
+roughness_texture_channel = 4
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_4rja4"]
+material = SubResource("StandardMaterial3D_8read")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pmath"]
+load_path = "res://.godot/imported/2k_venus_surface.jpg-13561e09c43391103dd9ba4d44d6069b.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qo7vf"]
+albedo_texture = SubResource("CompressedTexture2D_pmath")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_76586"]
+material = SubResource("StandardMaterial3D_qo7vf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_deswa"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.8509804)
+albedo_texture = ExtResource("13_vjecv")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_g2pbs"]
+material = SubResource("StandardMaterial3D_deswa")
+radius = 0.52
+height = 1.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0y5bi"]
+albedo_texture = ExtResource("12_7d1dr")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_gml7n"]
+material = SubResource("StandardMaterial3D_0y5bi")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h3v2a"]
+albedo_texture = ExtResource("13_7d1dr")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_3lk8n"]
+material = SubResource("StandardMaterial3D_h3v2a")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4rja4"]
+albedo_texture = ExtResource("16_h3v2a")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_0y5bi"]
+material = SubResource("StandardMaterial3D_4rja4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gml7n"]
+transparency = 1
+albedo_texture = ExtResource("15_h3v2a")
+backlight_enabled = true
+backlight = Color(0.05109611, 0.05109611, 0.051096104, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_pmath"]
+material = SubResource("StandardMaterial3D_gml7n")
+inner_radius = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_041qu"]
+albedo_texture = ExtResource("15_vjecv")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_8read"]
+material = SubResource("StandardMaterial3D_041qu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lk8n"]
+albedo_texture = ExtResource("10_uh4n1")
+backlight_enabled = true
+backlight = Color(0.096204735, 0.09620475, 0.096204735, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_041qu"]
+material = SubResource("StandardMaterial3D_3lk8n")
 
 [sub_resource type="Theme" id="Theme_fqmc4"]
 
@@ -224,6 +315,101 @@ light_energy = 16.0
 omni_range = 4108.78
 omni_attenuation = 0.5
 
+[node name="planets placeholder" type="Node3D" parent="Słońce" unique_id=1188460541]
+
+[node name="mercury holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=1154301043]
+transform = Transform3D(0.6170359, 0, 0.78693503, 0, 1, 0, -0.78693503, 0, 0.6170359, 0, 0, 0)
+
+[node name="mercury" type="StaticBody3D" parent="Słońce/planets placeholder/mercury holder" unique_id=272218031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 79.540184, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/mercury holder/mercury" unique_id=210786119]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/mercury holder/mercury" unique_id=1929204292]
+mesh = SubResource("SphereMesh_4rja4")
+
+[node name="venus holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=240662314]
+transform = Transform3D(-0.9106837, 0, 0.41310441, 0, 1, 0, -0.41310441, 0, -0.9106837, 0, 0, 0)
+
+[node name="venus" type="StaticBody3D" parent="Słońce/planets placeholder/venus holder" unique_id=2001832642]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 165.82776, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/venus holder/venus" unique_id=1601477744]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/venus holder/venus" unique_id=883930673]
+mesh = SubResource("SphereMesh_76586")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Słońce/planets placeholder/venus holder/venus" unique_id=1305492257]
+mesh = SubResource("SphereMesh_g2pbs")
+
+[node name="mars holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=1838507991]
+transform = Transform3D(0.43680173, 0, -0.8995578, 0, 1, 0, 0.8995578, 0, 0.43680173, 0, 0, 0)
+
+[node name="mars" type="StaticBody3D" parent="Słońce/planets placeholder/mars holder" unique_id=889786095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 349.76733, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/mars holder/mars" unique_id=873170115]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/mars holder/mars" unique_id=1620200345]
+mesh = SubResource("SphereMesh_gml7n")
+
+[node name="jupiter holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=1549819582]
+transform = Transform3D(-0.8616292, 0, -0.5075383, 0, 1, 0, 0.5075383, 0, -0.8616292, 0, 0, 0)
+
+[node name="jupiter" type="StaticBody3D" parent="Słońce/planets placeholder/jupiter holder" unique_id=1098967919]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 386.12976, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/jupiter holder/jupiter" unique_id=664600686]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/jupiter holder/jupiter" unique_id=1190954144]
+mesh = SubResource("SphereMesh_3lk8n")
+
+[node name="saturn holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=1860010462]
+transform = Transform3D(0.9310558, 0, -0.36487678, 0, 1, 0, 0.36487678, 0, 0.9310558, 0, 0, 0)
+
+[node name="saturn" type="StaticBody3D" parent="Słońce/planets placeholder/saturn holder" unique_id=1653032394]
+transform = Transform3D(3.8234968, -0.7552386, 0.9002713, 0.76102704, 3.9264514, 0.061784778, -0.8953835, 0.11222425, 3.8968825, 469.447, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/saturn holder/saturn" unique_id=1404100329]
+transform = Transform3D(1, 2.4680048e-08, 0, 5.6345016e-08, 1, 0, 2.9802322e-08, 1.8626451e-09, 1, 0, 0, 0)
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/saturn holder/saturn" unique_id=1161922684]
+transform = Transform3D(1, 2.4680048e-08, 0, 5.6345016e-08, 1, 0, 2.9802322e-08, 1.8626451e-09, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_0y5bi")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Słońce/planets placeholder/saturn holder/saturn" unique_id=1049341050]
+transform = Transform3D(1, -4.656613e-10, 0, 5.6345016e-08, 0.11, 0, 2.9802322e-08, 0, 1, 0, 0, 0)
+mesh = SubResource("TorusMesh_pmath")
+
+[node name="uranus holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=91476468]
+transform = Transform3D(0.9310558, 0, 0.36487678, 0, 1, 0, -0.36487678, 0, 0.9310558, 0, 0, 0)
+
+[node name="uranus" type="StaticBody3D" parent="Słońce/planets placeholder/uranus holder" unique_id=1368202138]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 534.067, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/uranus holder/uranus" unique_id=1433588127]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/uranus holder/uranus" unique_id=343957895]
+mesh = SubResource("SphereMesh_8read")
+
+[node name="neptune holder" type="Node3D" parent="Słońce/planets placeholder" unique_id=320339828]
+transform = Transform3D(-0.39874905, 0, -0.9170601, 0, 1, 0, 0.9170601, 0, -0.39874905, 0, 0, 0)
+
+[node name="Neptune" type="StaticBody3D" parent="Słońce/planets placeholder/neptune holder" unique_id=1486231640]
+transform = Transform3D(2.7, 0, 0, 0, 2.7, 0, 0, 0, 2.7, 619.8823, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Słońce/planets placeholder/neptune holder/Neptune" unique_id=1424001109]
+shape = SubResource("SphereShape3D_h3v2a")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Słońce/planets placeholder/neptune holder/Neptune" unique_id=548337249]
+mesh = SubResource("SphereMesh_041qu")
+
 [node name="GameOverScreen" type="Control" parent="." unique_id=1735990023]
 unique_name_in_owner = true
 visible = false
@@ -272,7 +458,7 @@ script = ExtResource("11_gs")
 script = ExtResource("12_metu4")
 
 [node name="asteroid" type="StaticBody3D" parent="asteroid spawner" unique_id=1892000198]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.358276, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.590912, 0, 0)
 
 [node name="asteroid" type="MeshInstance3D" parent="asteroid spawner/asteroid" unique_id=759125931]
 mesh = SubResource("SphereMesh_1dcfr")
