@@ -9,8 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://c0emdshsdeoui" path="res://8k_earth_daymap.jpg" id="6_fqmc4"]
 [ext_resource type="Shader" uid="uid://s5y1sf2p67xy" path="res://darkreplaceshader.gdshader" id="6_jlw0d"]
 [ext_resource type="Texture2D" uid="uid://t8gptwl4bsbw" path="res://8k_earth_nightmap.jpg" id="8_huu8u"]
-[ext_resource type="Shader" uid="uid://bkd3ds7egm3lr" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
-[ext_resource type="Script" uid="uid://dh6i5nbuf60l7" path="res://scripts/ground_station.gd" id="11_gs"]
+[ext_resource type="Shader" path="res://collision_shape_3d.gdshader" id="9_huu8u"]
+[ext_resource type="Script" path="res://scripts/ground_station.gd" id="11_gs"]
+[ext_resource type="Script" uid="uid://d4khmatd420j7" path="res://asteroid_spawner.gd" id="12_metu4"]
+[ext_resource type="Texture2D" uid="uid://3gkdpw32xiff" path="res://asteroid.jpg" id="13_vg7w2"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xdl8v"]
 panorama = ExtResource("5_rqkj4")
@@ -148,6 +150,23 @@ default_font_size = 100
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xdl8v"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dibg2"]
+albedo_color = Color(0.24115604, 0.24115604, 0.24115604, 1)
+albedo_texture = ExtResource("13_vg7w2")
+metallic_specular = 0.0
+metallic_texture = ExtResource("13_vg7w2")
+metallic_texture_channel = 4
+roughness = 0.52
+roughness_texture = ExtResource("13_vg7w2")
+roughness_texture_channel = 4
+backlight_enabled = true
+backlight = Color(0.26147652, 0.26147655, 0.26147652, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_1dcfr"]
+material = SubResource("StandardMaterial3D_dibg2")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_metu4"]
+
 [node name="Node3D" type="Node3D" unique_id=1479732840]
 
 [node name="PlayerSat" parent="." unique_id=873958782 instance=ExtResource("1_pv212")]
@@ -248,5 +267,17 @@ icon = SubResource("ViewportTexture_xdl8v")
 
 [node name="GroundStation" type="Node" parent="." unique_id=1771122099]
 script = ExtResource("11_gs")
+
+[node name="asteroid spawner" type="Node3D" parent="." unique_id=694741185]
+script = ExtResource("12_metu4")
+
+[node name="asteroid" type="StaticBody3D" parent="asteroid spawner" unique_id=1892000198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.358276, 0, 0)
+
+[node name="asteroid" type="MeshInstance3D" parent="asteroid spawner/asteroid" unique_id=759125931]
+mesh = SubResource("SphereMesh_1dcfr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="asteroid spawner/asteroid" unique_id=1867411232]
+shape = SubResource("SphereShape3D_metu4")
 
 [connection signal="pressed" from="GameOverScreen/Game again btn" to="PlayerSat" method="_on_button_pressed"]

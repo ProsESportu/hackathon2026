@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://i0bnefstw38d"
-path.s3tc="res://.godot/imported/kabelki_out.png-e3b20033973c8755ba442f71f28782a5.s3tc.ctex"
+uid="uid://3gkdpw32xiff"
+path.s3tc="res://.godot/imported/asteroid.jpg-5a6b21aed33f0a5293daa014796570c9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://kabelki_out.png"
-dest_files=["res://.godot/imported/kabelki_out.png-e3b20033973c8755ba442f71f28782a5.s3tc.ctex"]
+source_file="res://asteroid.jpg"
+dest_files=["res://.godot/imported/asteroid.jpg-5a6b21aed33f0a5293daa014796570c9.s3tc.ctex"]
 
 [params]
 
