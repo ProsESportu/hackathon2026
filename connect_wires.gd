@@ -1,4 +1,7 @@
 extends Node2D
+
+signal completed
+
 @onready var wire: Node2D = $wire
 @onready var label: RichTextLabel = $Label
 
@@ -29,12 +32,15 @@ func _process(delta: float) -> void:
 			break
 	if all_connected:
 		wires[0].connected=false
-		
+
 		var tween = get_tree().create_tween()
 		tween.set_trans(Tween.TRANS_BOUNCE)
 		tween.set_parallel(true)
 		tween.tween_property(label, "rotation_degrees", 360*5, 1.0)
 		tween.tween_property(label, "scale", Vector2.ONE*3, 1.0)
+		await tween.finished
+		InputBridge.disabled_input = false
+		completed.emit()
 			
 			
 			

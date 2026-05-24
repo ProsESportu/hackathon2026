@@ -35,6 +35,11 @@ var _cinematic_active: bool = false
 var _satellite_spawner: Node
 var _modal_active: bool = false
 var _current_modal_id: int = -1
+var _minigame_node: Node = null
+var _pending_data: SatelliteData = null
+var _pending_minigame_id: int = -1
+
+const MINIGAME_SCENE: PackedScene = preload("res://connect_wires.tscn")
 var _modal_root: ColorRect
 var _modal_photo: TextureRect
 var _modal_no_photo_label: Label
@@ -141,11 +146,28 @@ func _on_satellite_out_of_range() -> void:
 
 
 func _on_minigame_requested(_sat: Node3D, data: SatelliteData) -> void:
-	_show_satellite_modal(data)
-	_modal_reward.text = "Waiting for minigame result..."
-	# Send minigame to PI
-	var random_id = MinigameBroadcaster.get_random_minigame_id()
-	MinigameBroadcaster.send_minigame(random_id)
+	_pending_data = data
+	_pending_minigame_id = MinigameBroadcaster.get_random_minigame_id()
+	interaction_prompt.visible = false
+
+	_minigame_node = MINIGAME_SCENE.instantiate()
+	add_child(_minigame_node)
+	_minigame_node.completed.connect(_on_ingame_minigame_completed)
+
+
+func _on_ingame_minigame_completed() -> void:
+	if _minigame_node != null:
+		_minigame_node.queue_free()
+		_minigame_node = null
+
+	MinigameBroadcaster.send_minigame(_pending_minigame_id)
+	_pending_minigame_id = -1
+
+	if _pending_data != null:
+		_show_satellite_modal(_pending_data)
+		_modal_reward.text = "Waiting for minigame result..."
+		MinigameBroadcaster.send_satellite_id(_pending_data.norad_id)
+		_pending_data = null
 
 
 func _on_minigame_completed(reward: String) -> void:
