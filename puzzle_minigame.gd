@@ -81,16 +81,16 @@ func _check_absolute_sum():
 	var sum = 0.0
 	for polygon2d in all_polygons:
 		sum+=p.distance_to(polygon2d.position)
-	if sum<prog:
+	if sum<prog and not c:
 		print('wygrales')
-		_finish_business()
+		var t := get_tree().create_tween()
+		for polygon2d in all_polygons:
+			t.tween_property(polygon2d,'position',all_polygons[0].position,0.05)
+			t.tween_property(polygon2d,'color',Color.WHITE,0.05)
+		await t.finished
 		completed.emit()
 		c=true
 	else:
 		print('zabraklo ci!')
 		print(sum)
-
-func _finish_business():
-	var t := get_tree().create_tween()
-	for polygon2d in all_polygons:
-		t.tween_property(polygon2d,'position',all_polygons[0].position,0.1)
+	
