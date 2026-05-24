@@ -159,7 +159,7 @@ func _on_satellite_out_of_range() -> void:
 
 
 func _on_minigame_requested(_sat: Node3D, data: SatelliteData) -> void:
-	player.zero_velocity()
+	player.lock_movement()
 	_pending_data = data
 	_pending_minigame_id = MinigameBroadcaster.get_random_minigame_id()
 	interaction_prompt.visible = false
@@ -174,6 +174,7 @@ func _on_ingame_minigame_completed() -> void:
 	if _minigame_node != null:
 		_minigame_node.queue_free()
 		_minigame_node = null
+	player.unlock_movement()
 
 	MinigameBroadcaster.send_minigame(_pending_minigame_id)
 	_pending_minigame_id = -1

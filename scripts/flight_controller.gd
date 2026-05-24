@@ -91,6 +91,8 @@ func _apply_angular_velocity(delta: float) -> void:
 		rotate_object_local(Vector3.FORWARD, ang_vel.z * delta)
 
 func _apply_thrust(delta: float) -> void:
+	if movement_locked:
+		return
 	var basis := global_transform.basis
 	var fwd: Vector3 = -basis.z   # camera-forward in Godot
 	var right: Vector3 = basis.x
@@ -112,17 +114,26 @@ func _apply_thrust(delta: float) -> void:
 		velocity *= pow(BRAKE_DAMP_PER_SEC, delta)
 
 func _integrate_position(delta: float) -> void:
+	if movement_locked:
+		return
 	# Local-space integration: when reparented under EarthFrame the player
 	# automatically drifts with Earth, and `velocity` is interpreted in the
 	# parent's frame. Under the scene root (identity transform) this is
 	# equivalent to integrating global_position.
 	position += velocity * delta
 
+var movement_locked: bool = false
+
+func lock_movement() -> void:
+	velocity = Vector3.ZERO
+	movement_locked = true
+
+func unlock_movement() -> void:
+	movement_locked = false
+
 func on_orbit_entered(_earth_world_velocity: Vector3) -> void:
 	in_orbit = true
 	velocity = Vector3.ZERO
-	var dir: Vector3 = position.normalized() if position.length() > 0.001 else Vector3.BACK
-	position = dir * ORBIT_ENTRY_DROP_RADIUS
 
 func on_orbit_exited(earth_world_velocity: Vector3) -> void:
 	# Convert Earth-frame velocity back to world-relative.
