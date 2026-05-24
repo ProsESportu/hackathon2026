@@ -14,7 +14,7 @@ const VEL_DAMP_PER_SEC: float = 0.985        # light drag
 const BRAKE_DAMP_PER_SEC: float = 0.02       # Space = active brake (~98%/s velocity loss)
 const EARTH_COLLISION_FLOOR: float = 1.015   # scene radius (Sun, at origin)
 const EARTH_RADIUS: float = 0.51             # orbiting Earth surface (sphere radius 0.5 + buffer)
-const ORBIT_ENTRY_DROP_RADIUS: float = 0.655 # midpoint between EARTH_RADIUS (0.51) and OrbitManager.ORBIT_ENTER_RADIUS (0.80)
+const ORBIT_ENTRY_DROP_RADIUS: float = 1 # midpoint between EARTH_RADIUS (0.51) and OrbitManager.ORBIT_ENTER_RADIUS (0.80)
 const START_ALT_SCENE: float = 1.11          # ~700 km altitude in scene units
 const FRAME_REF_HZ: float = 60.0             # prototype thrust was per-frame at 60 Hz
 @onready var game_over_screen: Control = %GameOverScreen

@@ -19,7 +19,7 @@ signal proximity_alert_cleared
 const ORBIT_ENTER_RADIUS: float = 2.0
 const ORBIT_EXIT_RADIUS:  float = 2.1
 const ORBIT_WARN_RADIUS:  float = 1.6
-const PROXIMITY_WARN_RADIUS:  float = 0.61   # ~0.10 above Earth surface
+const PROXIMITY_WARN_RADIUS:  float = 0.7   # ~0.10 above Earth surface
 const PROXIMITY_CLEAR_RADIUS: float = 0.64   # hysteresis band (0.03 wide)
 
 const EARTH_PATH:       NodePath = ^"../Słońce/ziemia axis/Ziemia"

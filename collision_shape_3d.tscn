@@ -45,6 +45,8 @@ albedo_texture = ExtResource("6_fqmc4")
 [sub_resource type="SphereMesh" id="SphereMesh_pv212"]
 lightmap_size_hint = Vector2i(17, 9)
 material = SubResource("StandardMaterial3D_a87sn")
+radius = 0.55
+height = 1.1
 
 [sub_resource type="Animation" id="Animation_lixys"]
 length = 365.0
