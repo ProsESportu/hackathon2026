@@ -41,7 +41,11 @@ var _pending_minigame_id: int = -1
 var _ground_station: Node = null
 var _uplink_label: Label = null
 
-const MINIGAME_SCENE: PackedScene = preload("res://connect_wires.tscn")
+const MINIGAME_SCENES: Array[PackedScene] = [
+	preload("res://connect_wires.tscn"),
+	preload("res://scenes/puzzle_minigame.tscn"),
+	preload("res://memory.tscn"),
+]
 var _modal_root: ColorRect
 var _modal_photo: TextureRect
 var _modal_no_photo_label: Label
@@ -159,7 +163,8 @@ func _on_minigame_requested(_sat: Node3D, data: SatelliteData) -> void:
 	_pending_minigame_id = MinigameBroadcaster.get_random_minigame_id()
 	interaction_prompt.visible = false
 
-	_minigame_node = MINIGAME_SCENE.instantiate()
+	var scene_idx: int = clamp(_pending_minigame_id - 1, 0, MINIGAME_SCENES.size() - 1)
+	_minigame_node = MINIGAME_SCENES[scene_idx].instantiate()
 	add_child(_minigame_node)
 	_minigame_node.completed.connect(_on_ingame_minigame_completed)
 
