@@ -38,6 +38,8 @@ var _current_modal_id: int = -1
 var _minigame_node: Node = null
 var _pending_data: SatelliteData = null
 var _pending_minigame_id: int = -1
+var _ground_station: Node = null
+var _uplink_label: Label = null
 
 const MINIGAME_SCENE: PackedScene = preload("res://connect_wires.tscn")
 var _modal_root: ColorRect
@@ -75,6 +77,13 @@ func _ready() -> void:
 		gemini.description_ready.connect(_on_description_ready)
 
 	MinigameBroadcaster.minigame_completed.connect(_on_minigame_completed)
+
+	_ground_station = get_tree().current_scene.find_child("GroundStation", true, false)
+	if _ground_station:
+		_ground_station.overhead_started.connect(_on_stalowa_wola_overhead_started)
+		_ground_station.overhead_stopped.connect(_on_stalowa_wola_overhead_stopped)
+
+	_setup_branding()
 
 	arrow.texture = _make_arrow_texture()
 	arrow.pivot_offset = arrow.size * 0.5
@@ -418,3 +427,40 @@ func _update_edge_indicator() -> void:
 	var dist: float = player.global_position.distance_to(earth_pos)
 	distance_label.text = "EARTH %.2f" % dist
 	distance_label.position = edge_pos - dir * 40.0 - distance_label.size * 0.5
+
+
+# --- Branding & ground-station HUD -------------------------------------------
+
+func _setup_branding() -> void:
+	var branding := Label.new()
+	branding.text = "SPACE 4 TALENTS · STALOWA WOLA 2026"
+	branding.add_theme_font_size_override("font_size", 14)
+	branding.modulate = Color(0.75, 0.75, 0.75, 0.85)
+	branding.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	branding.position = Vector2(16.0, 16.0)
+	branding.size = Vector2(420.0, 22.0)
+	add_child(branding)
+
+	_uplink_label = Label.new()
+	_uplink_label.text = "⬆  STALOWA WOLA UPLINK ACTIVE"
+	_uplink_label.add_theme_font_size_override("font_size", 18)
+	_uplink_label.modulate = Color(0.0, 1.0, 1.0, 1.0)
+	_uplink_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_uplink_label.position = Vector2(16.0, 44.0)
+	_uplink_label.size = Vector2(500.0, 28.0)
+	_uplink_label.visible = false
+	add_child(_uplink_label)
+
+
+func _on_stalowa_wola_overhead_started() -> void:
+	if _uplink_label:
+		_uplink_label.visible = true
+
+
+func _on_stalowa_wola_overhead_stopped() -> void:
+	if _uplink_label:
+		_uplink_label.visible = false
+
+
+func is_stalowa_wola_overhead() -> bool:
+	return _ground_station != null and _ground_station.is_overhead()
