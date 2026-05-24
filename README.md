@@ -24,8 +24,9 @@ Orbital Hunter realizuje ten brief w formie krótkiej, efektownej gry 3D:
 
 - **Ruch satelitów** — pozycje obiektów na orbicie liczone są w czasie
   rzeczywistym z prawdziwych elementów TLE pobieranych ze Space-Track.
-- **Zobrazowania kosmiczne** — opisy i miniatury złapanych satelitów
-  generowane są przez Google Gemini na żywo, w języku polskim.
+- **Zobrazowania kosmiczne** — miniatury satelitów pobierane na żywo
+  z NASA EPIC, NOAA STAR (GOES-16) i Wikipedii, a polskojęzyczne
+  opisy generowane są przez lokalny model językowy.
 - **Układ miejski / historia regionu** — Stalowa Wola jest osadzona na
   globie jako świecący znacznik naziemnej stacji uplinku
   (50.5826° N, 22.0533° E), z pulsującą wiązką uaktywnianą, gdy nad
@@ -109,9 +110,10 @@ przez UDP dla sterowania z zewnętrznego urządzenia (Raspberry Pi z
   położeniem w danej chwili (okres ~90 min jest zachowany).
 
 **Treści generowane przez AI**
-- **Google Gemini API** (`scripts/gemini_service.gd`) — generuje
-  polskojęzyczne, popularno-naukowe opisy każdego zdobytego
-  satelity wraz z jego zastosowaniem i ciekawostkami.
+- **Lokalny serwer LLM** (OpenAI-compatible `/v1/completions`,
+  `scripts/gemini_service.gd`) — generuje polskojęzyczne,
+  encyklopedyczne 5-punktowe opisy każdego zdobytego satelity
+  (nazwa + data startu, misja, orbita, ciekawostka, status).
 
 **Zobrazowania kosmiczne**
 - Tekstury planet Układu Słonecznego (Jowisz, Mars, Merkury, Neptun,
@@ -149,6 +151,58 @@ przez UDP dla sterowania z zewnętrznego urządzenia (Raspberry Pi z
 
 ---
 
+## Wykorzystane źródła i technologie / Sources & tech used
+
+### Zewnętrzne API i strony internetowe
+
+| Źródło | URL | Wykorzystanie w projekcie |
+|---|---|---|
+| **Space-Track.org** | https://www.space-track.org | Logowanie (`/ajaxauth/login`) i pobieranie SatCat + GP (TLE) dla losowanego NORAD ID. Plik: `scripts/satellite_service.gd`. |
+| **NASA EPIC API** | https://api.nasa.gov/EPIC/api/natural/images | Najświeższe zdjęcie Ziemi z satelity DSCOVR (NORAD 40390) jako miniatura w modalu zdobycia. Klucz publiczny `DEMO_KEY`. |
+| **NASA EPIC Archive** | https://epic.gsfc.nasa.gov/archive/natural/... | Bezpośrednie pobranie PNG-a wskazanego przez EPIC API. |
+| **NOAA STAR / GOES-16** | https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/1808x1808.jpg | Aktualny obraz GeoColor z satelity GOES-16 (NORAD 41866), kiedy gracz zdobędzie ten satelita. |
+| **Wikipedia API** | https://en.wikipedia.org/w/api.php (`pageimages`, `pithumbsize=500`) | Miniatura strony Wikipedii odpowiadającej nazwie satelity — fallback dla pozostałych obiektów. |
+| **CelesTrak / NORAD ID dataset** | https://celestrak.org | Źródło puli identyfikatorów NORAD zapisanych lokalnie w `norad_ids.json`. |
+| **Solar System Scope textures** | https://www.solarsystemscope.com/textures/ | Tekstury 2K/8K planet, Ziemi (day / night / normal map) i Drogi Mlecznej. |
+| **Lokalny serwer LLM** | `http://192.168.0.99:8080/v1/completions` (OpenAI-compatible) | Generowanie polskich, 5-punktowych opisów satelitów. Plik: `scripts/gemini_service.gd`. |
+
+### Stack techniczny
+
+**Silnik i języki**
+- Godot Engine 4.6
+- GDScript (cała logika gry, mini-gry, HUD, sieć, propagacja orbit)
+- Python 3 (kontroler Raspberry Pi: `raspberryPi/gyro.py`, `raspberryPi/screen.py`)
+- GLSL / Godot shader language (`darkreplaceshader.gdshader`,
+  `collision_shape_3d.gdshader` — shader dnia/nocy Ziemi, procedurale
+  Słońce)
+
+**Render i fizyka**
+- Renderer: GL Compatibility (mobile-grade, lepsza wydajność na słabym sprzęcie)
+- Backend Direct3D 12 na Windows
+- Jolt Physics jako silnik fizyki 3D, grawitacja domyślna 0 (kosmos)
+
+**Sieć / IPC**
+- HTTPRequest (Godot) — wszystkie wywołania REST (Space-Track, NASA, NOAA, Wikipedia, lokalny LLM)
+- UDP socket (`PacketPeerUDP`) — most wejściowy z Pi (`scripts/input_bridge.gd`) i broadcast mini-gier (`scripts/minigame_broadcaster.gd`)
+- Format danych: JSON (parsowanie wbudowane), TLE (parser własny w `scripts/orbital_position.gd`)
+
+**Mechaniki orbitalne**
+- Propagator pozycji satelity na podstawie elementów Keplerowskich wyciągniętych z TLE (`scripts/orbital_position.gd`)
+- Konwersja współrzędnych geograficznych Stalowej Woli (lat/lon → wektor jednostkowy → punkt na sferze Ziemi)
+- Automat stanów IN_SPACE / IN_ORBIT z histerezą (`scripts/orbit_manager.gd`)
+
+**Hardware (opcjonalny tor demo)**
+- Raspberry Pi
+- Czujnik żyroskopu (MPU/IMU) → mapowane na osi sterowania statkiem
+- LCD/OLED panel → wyświetlanie mini-gry slot machine zsynchronizowanej z grą
+
+**Narzędzia developerskie**
+- Godot Git Plugin (`addons/godot-git-plugin`)
+- Git / GitHub (`https://github.com/ProsESportu/hackathon2026`)
+- Claude Code — wsparcie w projektowaniu mechanik orbitalnych i refaktoryzacji
+
+---
+
 ## Uruchomienie / How to run
 
 ### Wersja zbudowana (Windows)
@@ -168,9 +222,11 @@ na lokalne dane, jeśli sieć zawiedzie).
 
 1. Zainstaluj **Godot 4.6** (https://godotengine.org).
 2. Otwórz `project.godot` w edytorze.
-3. Skonfiguruj klucze API (jeśli chcesz danych na żywo):
-   - Space-Track — w `scripts/satellite_service.gd`
-   - Gemini — w `scripts/gemini_service.gd`
+3. Skonfiguruj dane dostępowe (jeśli chcesz danych na żywo):
+   - **Space-Track** — login/hasło w `scripts/satellite_service.gd`
+   - **Lokalny LLM** — adres OpenAI-compatible serwera
+     (`/v1/completions`) w `scripts/gemini_service.gd`
+   - NASA EPIC działa na publicznym kluczu `DEMO_KEY`
 4. `F5`, scena startowa: `collision_shape_3d.tscn`.
 
 ### Sterowanie z Raspberry Pi (opcjonalne)
